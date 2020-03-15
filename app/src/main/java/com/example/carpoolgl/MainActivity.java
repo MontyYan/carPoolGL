@@ -9,15 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.model.LatLng;
+import com.example.carpoolgl.nowLoc.nowLocPresenter;
+import com.example.carpoolgl.nowLoc.nowLocView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,nowLocView{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, nowLocView {
     private TextView getOnTv;
+    private TextView getOffTv;
     private nowLocPresenter nowLocP;
+    private String nowLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +24,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         getOnTv = findViewById(R.id.getOn_TV);
         getOnTv.setOnClickListener(this);
+        getOffTv = findViewById(R.id.getOff_TV);
+        getOffTv.setOnClickListener(this);
         nowLocP = new nowLocPresenter(getApplicationContext());
         nowLocP.attachView(this);
     }
 
     @Override
     public void onClick(View v) {
+        boolean flag = false;   //false代表getonTv编辑，true代表getoffTv编辑
+        Intent intent;
         switch (v.getId()){
             case R.id.getOn_TV:
-                Log.e("getOn_Tv","点击");
-                Intent intent = new Intent(MainActivity.this,SearchActivity.class);
+                flag = false;
+                Log.e("getOn_Tv","点击getOn_Tv");
+                intent = new Intent(MainActivity.this,SearchActivity.class);
+                intent.putExtra("Edit_select",flag);
+                intent.putExtra("nowLocation",nowLocation);
+                startActivity(intent);
+                break;
+            case R.id.getOff_TV:
+                flag = true;
+                Log.e("getOff_Tv","点击getOff_Tv");
+                intent = new Intent(MainActivity.this,SearchActivity.class);
+                intent.putExtra("Edit_select",flag);
+                intent.putExtra("nowLocation",nowLocation);
                 startActivity(intent);
                 break;
         }
@@ -42,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void setGetonText(String addr) {
+        nowLocation = addr;
         getOnTv.setText(addr);
         Toast.makeText(this,addr,Toast.LENGTH_LONG).show();
     }
@@ -50,7 +65,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        nowLocP.destory();
         nowLocP.detachView();
+
     }
 
     @Override

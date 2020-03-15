@@ -8,26 +8,29 @@
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="353dp"
         android:layout_height="190dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.213">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/getOn_TV"
                 android:layout_width="268dp"
                 android:layout_height="47dp"
                 android:layout_marginTop="16dp"
-                android:gravity="center|left"
                 android:clickable="true"
+                android:gravity="center|left"
                 android:text="从哪儿上车"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.364"
@@ -35,7 +38,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/getff_TV"
+                android:id="@+id/getOff_TV"
                 android:layout_width="268dp"
                 android:layout_height="47dp"
                 android:layout_marginTop="72dp"
@@ -46,27 +49,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="92dp"
-        app:cardCornerRadius="5dp"
+    <RelativeLayout
+        android:layout_width="410dp"
+        android:layout_height="527dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.803"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
 
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#00000000"
+    </RelativeLayout>
 
-            app:srcCompat="@drawable/round_supervisor_account_black_48" />
-    </androidx.cardview.widget.CardView>
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_marginBottom="92dp"-->
+<!--        app:cardCornerRadius="5dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.803"-->
+<!--        app:layout_constraintStart_toStartOf="parent">-->
+<!--        <ImageButton-->
+<!--            android:id="@+id/imageButton2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="#00000000"-->
+
+<!--            app:srcCompat="@drawable/round_supervisor_account_black_48" />-->
+<!--    </androidx.cardview.widget.CardView>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
