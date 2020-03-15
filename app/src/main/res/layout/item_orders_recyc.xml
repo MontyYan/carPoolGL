@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="2dp"
+    android:background="@color/Snow">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="15dp"
+        android:elevation="3dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="95dp">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="64dp"
+                android:layout_marginEnd="31dp"
+                android:gravity="center"
+                android:text="桂电 金鸡岭校区"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="桂电 花江校区"
+                android:textAllCaps="false"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="17dp"
+                android:layout_marginBottom="19dp"
+                android:text="3-10 16:40" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="189dp"
+                android:layout_marginEnd="78dp"
+                android:layout_marginBottom="20dp"
+                android:layout_toEndOf="@+id/textView"
+                android:text="TextView" />
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
