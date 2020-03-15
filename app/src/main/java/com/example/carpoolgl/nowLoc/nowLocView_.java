@@ -1,4 +1,4 @@
-package com.example.carpoolgl;
+package com.example.carpoolgl.nowLoc;
 
 import android.content.Context;
 import android.util.Log;

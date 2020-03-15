@@ -1,4 +1,4 @@
-package com.example.carpoolgl;
+package com.example.carpoolgl.nowLoc;
 
 import android.content.Context;
 import android.util.Log;
@@ -45,14 +45,13 @@ public class nowLocPresenter {
                     Log.e("AmapError", "location Error, ErrCode:"
                             + aMapLocation.getErrorCode() + ", errInfo:"
                             + aMapLocation.getErrorInfo());
-                    Toast.makeText(mContext, "定位失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "定位失败", Toast.LENGTH_SHORT).show();
                 }
 
             }
         }
     };
     public void initLocListener(){
-//        nowLocModel.initLocaListener(mClient,mOption);
         mClient = new AMapLocationClient(mContext);
         mClient.setLocationListener(mLocationListener);
         mOption = new AMapLocationClientOption();
@@ -79,7 +78,11 @@ public class nowLocPresenter {
     }
 
     public void detachView(){
-        this.nowLocView=null;
+        this.nowLocView = null;
+
+    }
+
+    public void destory(){
         this.mClient.stopLocation();
     }
 
