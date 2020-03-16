@@ -54,10 +54,13 @@ public class SearchRecycAdapter extends RecyclerView.Adapter<SearchRecycAdapter.
 //                    }
                     if(onItemClickListener!=null){
                         HashMap<String, String> map = listString.get(getLayoutPosition());
-                        for(String title:map.keySet()){
-                            String content = map.get(title);
-                            onItemClickListener.OnItemclick(v,title+" "+content);
-                        }
+                        String title = map.get("name");
+                        String content = map.get("address");
+                        onItemClickListener.OnItemclick(v,title+" "+content);
+//                        for(String title:map.keySet()){
+//                            String content = map.get(title);
+//                            onItemClickListener.OnItemclick(v,title+" "+content);
+//                        }
 
                     }
 
@@ -110,8 +113,9 @@ public class SearchRecycAdapter extends RecyclerView.Adapter<SearchRecycAdapter.
 //        holder.tv_title.setText(data);
         HashMap<String, String> map = listString.get(position);
         Log.i("map",map+"");
-        holder.tv_content.setText(map.get("name"));
-        holder.tv_title.setText(map.get("address"));
+        holder.tv_title.setText(map.get("name"));
+        holder.tv_content.setText(map.get("address"));
+
     }
 
     /**
