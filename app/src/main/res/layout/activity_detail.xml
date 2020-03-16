@@ -29,6 +29,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <Button
+        android:id="@+id/publish_bt"
+        android:layout_width="320dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="24dp"
+        android:text="发布行程"
+        android:textSize="18sp"
+        android:background="@drawable/button_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/money" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="330dp"
@@ -64,11 +78,11 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView8"
-                android:layout_width="195dp"
+                android:id="@+id/detail_geton_tv"
+                android:layout_width="230dp"
                 android:layout_height="28dp"
                 android:text="桂电花江校区"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.328"
@@ -77,11 +91,11 @@
                 app:layout_constraintVertical_bias="0.864" />
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="195dp"
+                android:id="@+id/detail_getoff_tv"
+                android:layout_width="230dp"
                 android:layout_height="26dp"
                 android:text="桂电金鸡岭校区"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.328"
@@ -90,7 +104,7 @@
                 app:layout_constraintVertical_bias="0.05" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
@@ -100,7 +114,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/person_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="68dp"
@@ -127,15 +141,11 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/black" />
             </LinearLayout>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/money"
         android:layout_width="121dp"
         android:layout_height="67dp"
         android:layout_marginTop="152dp"
@@ -148,18 +158,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView2" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="320dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="24dp"
-        android:text="现在出发"
-        android:textSize="18sp"
-        android:background="@drawable/button_normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.615"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
 
     <TextView
         android:id="@+id/textView6"
@@ -170,9 +169,43 @@
         android:text="￥"
         android:textColor="@color/header_toast"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView5"
+        app:layout_constraintEnd_toStartOf="@+id/money"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+    <TextView
+        android:id="@+id/fog"
+        android:elevation="9dp"
+        android:visibility="invisible"
+        android:background="@color/fog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <!-- 设置elevation是为了覆盖button    -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordLayout_detail"
+        android:elevation="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/bottom_detail"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@color/Snow"
+            android:clickable="true"
+            android:focusable="true"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
