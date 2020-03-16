@@ -35,4 +35,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
 
+    <color name="fog">#99FFFFFF</color>
+
 </resources>
