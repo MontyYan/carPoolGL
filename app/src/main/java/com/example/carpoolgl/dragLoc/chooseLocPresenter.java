@@ -52,9 +52,13 @@ public class chooseLocPresenter implements
     private LatLng latLng;
     private GeocodeSearch mGeocoSearch;
 
-    public chooseLocPresenter(Context context,MapView mapView,int[] Screen){
-        this.mcontext = context;
+    public chooseLocPresenter(MapView mapView){
         this.mapView = mapView;
+    }
+
+    public void initChooseLocPresenter(Context context,int[] Screen){
+        this.mcontext = context;
+//        this.mapView = mapView;
         this.Screen = Screen;
         initMap();
     }
