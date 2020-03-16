@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         nowLocP.destory();
         nowLocP.detachView();
-
     }
 
     @Override
