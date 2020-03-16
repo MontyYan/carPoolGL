@@ -55,10 +55,12 @@ public class SearchActivity extends AppCompatActivity implements
     private ImageView back_img_view;
     private TextView choose_Tv;
     private MapView mapView;
-    private chooseLocPresenter chooseLocP;
+    private chooseLocPresenter chooseLocP=null;
 
     private boolean editSelect;
     private String nowlocation;
+    private String startAddress;
+    private String endAddress;
 
     private RecyclerView recyc;
     private ArrayList<String> datas;//初步数据集合，后续替代掉
@@ -76,6 +78,8 @@ public class SearchActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         editSelect = intent.getBooleanExtra("Edit_select",false);
         nowlocation = intent.getStringExtra("nowLocation");
+        //startAddress保存从MainActivity传来的地址数据，用于传给DetailActivity
+        startAddress = nowlocation;
         getOn_Edit.setText(nowlocation);
         mBoSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -102,11 +106,11 @@ public class SearchActivity extends AppCompatActivity implements
         });
 
         mapView.onCreate(savedInstanceState);
-        chooseLocP = new chooseLocPresenter(getApplicationContext(),mapView,getScreenWH());
-        chooseLocP.attachView(this);
+        chooseLocP = new chooseLocPresenter(mapView);
+//        chooseLocP = new chooseLocPresenter(getApplicationContext(),mapView,getScreenWH());
+//        chooseLocP.attachView(this);
         //initDatas();
         //initRecyclerview();
-
     }
 
     //**TextWatcher*****************************************************************************************************************************
@@ -142,17 +146,25 @@ public class SearchActivity extends AppCompatActivity implements
                     Tip tip = tipList.get(i);
                     if(tip != null) {
                         HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("name", tipList.get(i).getName());
-                        map.put("address", tipList.get(i).getDistrict());
+                        String[] area = tipList.get(i).getDistrict().split("市");//姑苏区
+                        String address = tipList.get(i).getName();
+//                        map.put("name", tipList.get(i).getName());
+                        map.put("name", area[1]);
+//                        map.put("address", tipList.get(i).getDistrict());
+                        map.put("address", address);
+
+                        Log.i("getName",tipList.get(i).getName());//杨枝二村苏大家属区31幢
+                        Log.i("getAddress",tipList.get(i).getAddress());//葑门西街东150米
+                        Log.i("toString",tipList.get(i).toString());//杨枝二村苏大家属区23幢 district:江苏省苏州市姑苏区 adcode:320508
+                        Log.i("getDistrict",tipList.get(i).getDistrict());//江苏省苏州市姑苏区
+
                         listString.add(map);
-                        Log.i("map_name_add",tipList.get(i).getName()+" "+tipList.get(i).getDistrict());
+//                        Log.i("map_name_add",tipList.get(i).getName()+" "+tipList.get(i).getDistrict());
                     }
                 }
 
                 recycAdapter = new SearchRecycAdapter(SearchActivity.this,listString);
 
-//                SimpleAdapter aAdapter = new SimpleAdapter(getApplicationContext(), listString, R.layout.item_search_recyc,
-//                        new String[]{"name", "address"}, new int[]{R.id.tv_title, R.id.tv_content});
 
                 recyc.setAdapter(recycAdapter);
                 recyc.setLayoutManager(new LinearLayoutManager(
@@ -163,7 +175,13 @@ public class SearchActivity extends AppCompatActivity implements
                 recycAdapter.setOnItemClickListener(new SearchRecycAdapter.OnItemClickListener() {
                     @Override
                     public void OnItemclick(View view, String data) {
-                        Toast.makeText(SearchActivity.this,"data="+data,Toast.LENGTH_SHORT).show();
+                        String[] da = data.split(" ");
+//                        startAddress = data;
+                        LocInfo_SetText(data);
+                        if(editSelect){
+                            startDetailActi();
+                        }
+                        Toast.makeText(SearchActivity.this,"data="+da[0]+" "+da[1],Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -224,20 +242,23 @@ public class SearchActivity extends AppCompatActivity implements
         switch (v.getId()){
             case R.id.getOn_edit:
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                getOn_Edit.setText("");
                 editSelect = false;
                 break;
             case R.id.getOff_edit:
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                getOff_Edit.setText("");
                 editSelect = true;
                 break;
             case R.id.drawer_loc:
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                chooseLocP.initChooseLocPresenter(getApplicationContext(),getScreenWH());
+                chooseLocP.attachView(this);
                 break;
             case R.id.ensure_loc_bt:
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 if(editSelect){
-                    Intent intent = new Intent(SearchActivity.this,DetailActivity.class);
-                    startActivity(intent);
+                    startDetailActi();
                 }
                 break;
             case R.id.back_img:
@@ -285,8 +306,12 @@ public class SearchActivity extends AppCompatActivity implements
         EditText edit = null;
         if(editSelect){ //true为getoff
             edit = getOff_Edit;
+            //拖动，赋值终点地址
+            endAddress = s; //
         }else{
             edit = getOn_Edit;
+            //拖动，地址发生变化，新地址覆盖从MainActivity传来的旧地址
+            startAddress = s;
         }
         textShowWays(s,edit);
         Log.e("LocInfo_SetText",s);
@@ -298,6 +323,13 @@ public class SearchActivity extends AppCompatActivity implements
         }else{
             edit.setText(s);
         }
+    }
+    //进入DetailAactivity
+    public void startDetailActi(){
+        Intent intent = new Intent(SearchActivity.this,DetailActivity.class);
+        intent.putExtra("startAddress",startAddress);
+        intent.putExtra("endAddress",endAddress);
+        startActivity(intent);
     }
 
 }
