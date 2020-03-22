@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps.MapView;
 import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
@@ -68,7 +69,8 @@ public class SearchActivity extends AppCompatActivity implements
 
     //search
     private String city = "苏州";
-    private ListView minputlist;
+    private LatLonPoint mStartPoint;
+    private LatLonPoint mEndPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -316,6 +318,12 @@ public class SearchActivity extends AppCompatActivity implements
         textShowWays(s,edit);
         Log.e("LocInfo_SetText",s);
     }
+
+    @Override
+    public void LocInfo_LatLon(LatLonPoint mPoint) {
+
+    }
+
     //在Edit中，信息显示方式，长度超过18的部分用...代替
     public void textShowWays(String s,EditText edit){
         if(s.length()>18){
