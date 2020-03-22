@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:text="确认乘车人数"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_30"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/num_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pas_num_target_tv"
+            android:layout_weight="1"
+            android:text="1"
+            android:textSize="@dimen/font_30"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            />
+        <TextView
+            android:id="@+id/num_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pas_num_tv"
+            android:layout_weight="1"
+            android:text="2"
+            android:textSize="@dimen/font_30"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            />
+        <TextView
+            android:id="@+id/num_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pas_num_tv"
+            android:layout_weight="1"
+            android:text="3"
+            android:textSize="@dimen/font_30"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            />
+        <TextView
+            android:id="@+id/num_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pas_num_tv"
+            android:layout_weight="1"
+            android:text="4"
+            android:textSize="@dimen/font_30"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/num_certain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:text="1人出行"
+            android:textSize="18sp"
+            android:typeface="sans"
+            android:background="@drawable/button_normal"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
