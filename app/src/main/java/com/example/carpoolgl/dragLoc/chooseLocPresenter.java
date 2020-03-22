@@ -51,6 +51,9 @@ public class chooseLocPresenter implements
     private String address;
     private LatLng latLng;
     private GeocodeSearch mGeocoSearch;
+    //坐标，传给DetailActivity，
+    private double latitude;
+    private double longitude;
 
     public chooseLocPresenter(MapView mapView){
         this.mapView = mapView;
@@ -149,8 +152,8 @@ public class chooseLocPresenter implements
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
         latLng = cameraPosition.target;
-        double latitude = latLng.latitude;
-        double longitude = latLng.longitude;
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
         Log.e("latitude",latitude+"");
         Log.e("longitude",longitude+"");
         getAddress(latLng);
