@@ -107,40 +107,74 @@
                 android:id="@+id/start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="52dp"
+                android:layout_marginStart="56dp"
                 android:layout_marginBottom="28dp"
-                android:text="出发时间"
+                android:text="现在出发 >"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="130dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.55"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/person_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="68dp"
+                android:layout_marginEnd="52dp"
                 android:layout_marginBottom="28dp"
-                android:text="乘坐人数"
+                android:text="1人乘车 >"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="1dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="130dp"
-                android:background="@android:color/darker_gray"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/black" />
-            </LinearLayout>
+            <!--            <LinearLayout-->
+<!--                android:id="@+id/linearLayout3"-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginTop="130dp"-->
+<!--                android:layout_marginEnd="30dp"-->
+<!--                android:background="@android:color/darker_gray"-->
+<!--                android:paddingLeft="5dp"-->
+<!--                android:paddingRight="5dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.75"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
+
+<!--                <View-->
+<!--                    android:layout_width="1dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:background="@android:color/black" />-->
+<!--            </LinearLayout>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/map_detail"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginEnd="16dp"-->
+<!--                android:layout_marginBottom="28dp"-->
+<!--                android:text="查看地图"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent" />-->
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -150,7 +184,7 @@
         android:layout_height="67dp"
         android:layout_marginTop="152dp"
         android:gravity="left"
-        android:text="18.5"
+        android:text="10.0"
         android:textColor="@color/header_toast"
         android:textSize="38sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -185,9 +219,12 @@
     <!-- 设置elevation是为了覆盖button    -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordLayout_detail"
-        android:elevation="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/bottom_detail"
@@ -199,12 +236,8 @@
             app:behavior_peekHeight="0dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </RelativeLayout>
+            <include
+                layout="@layout/passenger_num"/>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
