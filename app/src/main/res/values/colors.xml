@@ -8,7 +8,7 @@
     <color name="black">#000000</color>
 
     <color name="grey"> #ebebeb</color>
-    <color name="darkgrey"> #C0C0C0</color>
+    <color name="darkgrey">#ADC0C0C0</color>
     <color name="white"> #FFFFFF</color>
     <color name="red"> #FF0000</color>
     <color name="f850_default_blue">#0079ff</color>
@@ -38,5 +38,8 @@
     <color name="fog">#99FFFFFF</color>
     <color name="num_color">#F3F5F9</color>
     <color name="num_pitch">#FFC348</color>
+
+    <color name="start_green">#1eb2a6</color>
+    <color name="end_red">#f67575</color>
 
 </resources>
