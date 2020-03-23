@@ -92,18 +92,7 @@ public class SearchActivity extends AppCompatActivity implements
             }
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                bottomSheet.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        int action = MotionEventCompat.getActionMasked(event);
-                        switch (action){
-                            case MotionEvent.ACTION_DOWN:
-                                return false;
-                                default:
-                                    return true;
-                        }
-                    }
-                });
+
             }
         });
 
