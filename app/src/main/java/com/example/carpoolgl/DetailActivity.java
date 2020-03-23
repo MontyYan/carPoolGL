@@ -158,6 +158,11 @@ public class DetailActivity extends AppCompatActivity implements
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 Fog.setVisibility(View.VISIBLE);
                 break;
+
+            case R.id.publish_bt:
+                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+                startActivity(intent);
+                break;
             case R.id.fog:
                 Fog.setVisibility(View.INVISIBLE);
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
