@@ -12,7 +12,10 @@ import android.widget.Toast;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
 
+import org.xutils.view.annotation.ViewInject;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, nowLocView {
+
     private TextView getOnTv;
     private TextView getOffTv;
     private nowLocPresenter nowLocP;
