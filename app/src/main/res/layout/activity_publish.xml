@@ -10,9 +10,9 @@
     <LinearLayout
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:elevation="5dp">
+        android:elevation="2dp">
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -44,6 +44,7 @@
         android:layout_height="270dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="4dp"
+        android:background="@color/white"
         android:layout_marginTop="13dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
