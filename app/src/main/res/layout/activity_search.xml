@@ -12,107 +12,140 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
+        android:elevation="3dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
-            android:background="@color/Snow"
+            android:layout_height="500dp"
+            android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
-            app:behavior_peekHeight="0dp"
+            app:behavior_peekHeight="60dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <include
+                    android:id="@+id/school_lay"
+                    layout="@layout/school_home"/>
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="40dp"-->
+                <!--                    android:orientation="horizontal">-->
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/drawer_choose"-->
+                <!--                        android:layout_width="30dp"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:layout_marginLeft="30dp"-->
+                <!--                        app:srcCompat="@drawable/ic_menu_send" />-->
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/drawer_loc"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:layout_marginLeft="15dp"-->
+                <!--                        android:gravity="center|left"-->
+                <!--                        android:text="在地图上选址" />-->
+                <!--                </LinearLayout>-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/searchRecycView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                 </androidx.recyclerview.widget.RecyclerView>
-            </RelativeLayout>
+            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <LinearLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="174dp"
-        android:background="@color/Snow"
+        android:layout_height="120dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/back_img"
-            android:layout_width="33dp"
-            android:layout_height="34dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.016"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/round_arrow_back_black_36" />
+        <!--        返回箭头-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <ImageView
+                android:id="@+id/back_img"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                app:srcCompat="@drawable/round_arrow_back_black_24" />
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/getOn_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="35dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginRight="40dp"
-            android:background="@drawable/edit_normal"
-            android:hint="从哪儿上车"
-            android:textSize="13dp"
-            android:cursorVisible="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.487"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/circle_start"
+                android:layout_gravity="center"/>
+            <EditText
+                android:id="@+id/getOn_edit"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/edit_normal"
+                android:cursorVisible="false"
+                android:hint="从哪儿上车"
+                android:textSize="13dp" />
+        </LinearLayout>
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="1dp"-->
+        <!--                android:layout_marginLeft="15dp"-->
+        <!--                android:layout_marginRight="15dp"-->
+        <!--                android:layout_marginTop="5dp"-->
+        <!--                android:background="@android:color/white"-->
+        <!--                android:paddingLeft="5dp"-->
+        <!--                android:paddingRight="5dp">-->
+        <!--                <View-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:background="@android:color/darker_gray" />-->
+        <!--            </LinearLayout>-->
 
-
-        <EditText
-            android:id="@+id/getOff_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="35dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="84dp"
-            android:layout_marginRight="40dp"
-            android:background="@drawable/edit_normal"
-            android:hint="从哪儿下车"
-            android:textSize="13dp"
-            android:cursorVisible="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/drawer_choose"
-            android:layout_width="30dp"
-            android:layout_height="27dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/drawer_loc"
-            app:layout_constraintHorizontal_bias="0.844"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_menu_send" />
-
-        <TextView
-            android:id="@+id/drawer_loc"
-            android:layout_width="104dp"
-            android:layout_height="27dp"
-            android:layout_marginEnd="180dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="在地图上选址"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/circle_end"
+                android:layout_gravity="center"/>
+            <EditText
+                android:id="@+id/getOff_edit"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/edit_normal"
+                android:cursorVisible="false"
+                android:hint="从哪儿下车"
+                android:textSize="13dp"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
