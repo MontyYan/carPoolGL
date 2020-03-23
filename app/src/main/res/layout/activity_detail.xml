@@ -13,14 +13,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:background="@color/white"
+            android:elevation="2dp"
             android:orientation="horizontal">
 
             <ImageView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="16dp"
                 app:srcCompat="@drawable/round_arrow_back_black_36" />
@@ -45,7 +45,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="20dp"
-
+            android:background="@color/white"
             android:elevation="5dp"
             app:cardCornerRadius="15dp">
 
@@ -68,7 +68,7 @@
                     <TextView
                         android:id="@+id/detail_geton_tv"
                         android:layout_width="match_parent"
-                        android:layout_height="27dp"
+                        android:layout_height="25dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="30dp"
                         android:layout_gravity="center"
@@ -108,7 +108,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="30dp"
                         android:layout_gravity="center"
-                        android:layout_height="27dp"
+                        android:layout_height="25dp"
                         android:text="桂电金鸡岭校区"
                         android:textSize="17sp" />
                 </LinearLayout>
@@ -136,7 +136,7 @@
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@android:color/black" />
+                            android:background="@android:color/darker_gray" />
                     </LinearLayout>
                     <TextView
                         android:id="@+id/person_num"
@@ -213,13 +213,11 @@
         android:elevation="9dp"
         android:visibility="invisible" />
 
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordLayout_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="10dp"
-
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
