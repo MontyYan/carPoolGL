@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         initFvb();
-        setStartEndTv();
+        getSearchInfo();
         searchRouteResult(ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
         mBoSheetBehavior = BottomSheetBehavior.from(bottom_Detail);
         mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -78,12 +78,19 @@ public class DetailActivity extends AppCompatActivity implements
         timePicker();
     }
 
-    public void setStartEndTv(){
+    public void getSearchInfo(){
         Intent intent = getIntent();
         startAddr = intent.getStringExtra("startAddress");
         endAddr = intent.getStringExtra("endAddress");
         detail_geton_tv.setText(startAddr);
         detail_getoff_tv.setText(endAddr);
+        double[] Spoint=intent.getDoubleArrayExtra("startLatLon");
+        double[] Epoint=intent.getDoubleArrayExtra("endLatLon");
+        mStartPoint = new LatLonPoint(Spoint[1],Spoint[0]);
+        Log.i("DetailActivity",Spoint[0]+" "+Spoint[1]);
+        Log.i("DetailActivity",Epoint[0]+" "+Epoint[1]);
+        mEndPoint = new LatLonPoint(Epoint[1],Epoint[0]);
+//        mEndPoint = new LatLonPoint(100.650994,31.296645);
     }
     //*************************************************************************
     public void timePicker(){
@@ -104,6 +111,7 @@ public class DetailActivity extends AppCompatActivity implements
         })
                 .setType(new boolean[]{false, false, true, true, true, false})
                 .setOutSideColor(Color.parseColor("#99FFFFFF"))
+                .setTitleText("出发时间").setTitleColor(Color.parseColor("#000000"))
                 .addOnCancelClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -119,7 +127,9 @@ public class DetailActivity extends AppCompatActivity implements
     public void initFvb(){
         bottom_Detail = findViewById(R.id.bottom_detail);
         detail_geton_tv = findViewById(R.id.detail_geton_tv);
+        detail_geton_tv.setOnClickListener(this);
         detail_getoff_tv = findViewById(R.id.detail_getoff_tv);
+        detail_getoff_tv.setOnClickListener(this);
         Fog = findViewById(R.id.fog);
         Fog.setOnClickListener(this);
         money = findViewById(R.id.money);
@@ -158,16 +168,26 @@ public class DetailActivity extends AppCompatActivity implements
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 Fog.setVisibility(View.VISIBLE);
                 break;
-
             case R.id.publish_bt:
                 Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+                intent.putExtra("geton",detail_geton_tv.getText());
+                intent.putExtra("getoff",detail_getoff_tv.getText());
+                intent.putExtra("time",start_time.getText());
+                intent.putExtra("number",person_num.getText());
+                intent.putExtra("money",money.getText());
                 startActivity(intent);
                 break;
+            case R.id.detail_geton_tv:
+                finish();
+                break;
+            case R.id.detail_getoff_tv:
+                finish();
+                break;
+
             case R.id.fog:
                 Fog.setVisibility(View.INVISIBLE);
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 break;
-
             case R.id.num_1:
                 nums_color_set(num_1);
                 num_certain.setText("1人乘车");
