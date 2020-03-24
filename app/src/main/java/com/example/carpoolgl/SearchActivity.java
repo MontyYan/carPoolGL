@@ -69,6 +69,8 @@ public class SearchActivity extends AppCompatActivity implements
 
     //search
     private String city = "苏州";
+    private double[] startLatLon= new double[2];
+    private double[] endLatLon= new double[2];
     private LatLonPoint mStartPoint;
     private LatLonPoint mEndPoint;
 
@@ -80,6 +82,7 @@ public class SearchActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         editSelect = intent.getBooleanExtra("Edit_select",false);
         nowlocation = intent.getStringExtra("nowLocation");
+        startLatLon = intent.getDoubleArrayExtra("nowLatLong");
         //startAddress保存从MainActivity传来的地址数据，用于传给DetailActivity
         startAddress = nowlocation;
         getOn_Edit.setText(nowlocation);
@@ -138,25 +141,24 @@ public class SearchActivity extends AppCompatActivity implements
                     if(tip != null) {
                         HashMap<String, String> map = new HashMap<String, String>();
                         String[] area = tipList.get(i).getDistrict().split("市");//姑苏区
-                        String address = tipList.get(i).getName();
+                        String address = tipList.get(i).getName();//杨枝二村苏大家属区31幢
+                        LatLonPoint mpoint = tipList.get(i).getPoint();
 //                        map.put("name", tipList.get(i).getName());
                         map.put("name", area[1]);
 //                        map.put("address", tipList.get(i).getDistrict());
                         map.put("address", address);
-
+                        map.put("lat",mpoint.getLatitude()+"");
+                        map.put("lon",mpoint.getLongitude()+"");
                         Log.i("getName",tipList.get(i).getName());//杨枝二村苏大家属区31幢
                         Log.i("getAddress",tipList.get(i).getAddress());//葑门西街东150米
                         Log.i("toString",tipList.get(i).toString());//杨枝二村苏大家属区23幢 district:江苏省苏州市姑苏区 adcode:320508
                         Log.i("getDistrict",tipList.get(i).getDistrict());//江苏省苏州市姑苏区
-
+                        Log.i("latlon",mpoint.getLatitude()+" "+mpoint.getLongitude());//
                         listString.add(map);
 //                        Log.i("map_name_add",tipList.get(i).getName()+" "+tipList.get(i).getDistrict());
                     }
                 }
-
                 recycAdapter = new SearchRecycAdapter(SearchActivity.this,listString);
-
-
                 recyc.setAdapter(recycAdapter);
                 recyc.setLayoutManager(new LinearLayoutManager(
                         SearchActivity.this,
@@ -165,10 +167,11 @@ public class SearchActivity extends AppCompatActivity implements
                 ));
                 recycAdapter.setOnItemClickListener(new SearchRecycAdapter.OnItemClickListener() {
                     @Override
-                    public void OnItemclick(View view, String data) {
+                    public void OnItemclick(View view, String data,double lat,double lon) {
                         String[] da = data.split(" ");
 //                        startAddress = data;
                         LocInfo_SetText(data);
+                        setLatLon(lon,lat);
                         if(editSelect){
                             startDetailActi();
                         }
@@ -195,7 +198,7 @@ public class SearchActivity extends AppCompatActivity implements
                 ));
         recycAdapter.setOnItemClickListener(new SearchRecycAdapter.OnItemClickListener() {
             @Override
-            public void OnItemclick(View view, String data) {
+            public void OnItemclick(View view, String data,double lat,double lon) {
                 Toast.makeText(SearchActivity.this,"data="+data,Toast.LENGTH_SHORT).show();
             }
         });
@@ -309,8 +312,16 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void LocInfo_LatLon(LatLonPoint mPoint) {
-
+    public void setLatLon(double lon, double lat) {
+//        startLatLon[0]=lon;
+//        startLatLon[1]=lat;
+        if(editSelect){
+            endLatLon[0]=lon;
+            endLatLon[1]=lat;
+        }else {
+            startLatLon[0]=lon;
+            startLatLon[1]=lat;
+        }
     }
 
     //在Edit中，信息显示方式，长度超过18的部分用...代替
@@ -326,6 +337,8 @@ public class SearchActivity extends AppCompatActivity implements
         Intent intent = new Intent(SearchActivity.this,DetailActivity.class);
         intent.putExtra("startAddress",startAddress);
         intent.putExtra("endAddress",endAddress);
+        intent.putExtra("startLatLon",startLatLon);
+        intent.putExtra("endLatLon",endLatLon);
         startActivity(intent);
     }
 
