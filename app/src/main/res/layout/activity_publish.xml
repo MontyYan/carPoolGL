@@ -35,13 +35,12 @@
             android:text="取消订单"
             android:layout_marginRight="12dp"
             android:layout_weight="1"/>
-
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="280dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="4dp"
         android:background="@color/white"
@@ -63,50 +62,65 @@
                 android:textColor="@color/header_toast" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginLeft="30dp"
-                    android:background="@drawable/circle_start"
-                    android:layout_gravity="center"/>
-                <TextView
+                android:layout_height="50dp"
+                android:orientation="vertical">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:text="桂林市 良丰街道"
-                    android:gravity="center|left"
-                    />
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/directing_24dp"/>
-                <TextView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/circle_end"
-                    android:layout_gravity="center"/>
-                <TextView
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginLeft="45dp"
+                        android:background="@drawable/circle_start"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:id="@+id/publish_geton_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:text="桂林市 良丰街道"
+                        android:gravity="center|left" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:text="桂林市 桂林站"
-                    android:gravity="center|left"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_marginLeft="45dp"
+                        android:background="@drawable/circle_end"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:id="@+id/publish_getoff_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:text="桂林市 桂林站"
+                        android:gravity="center|left"/>
+                </LinearLayout>
+<!--                <ImageView-->
+<!--                    android:layout_width="25dp"-->
+<!--                    android:layout_height="25dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@drawable/directing_24dp"/>-->
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 >
                 <TextView
+                    android:id="@+id/publish_time_tv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -115,6 +129,7 @@
                     android:text="02-20 16:20"
                     android:gravity="center|right"/>
                 <TextView
+                    android:id="@+id/publish_num_tv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -123,6 +138,7 @@
                     android:text="人数：1"
                     android:gravity="right|center"/>
                 <TextView
+                    android:id="@+id/publish_money_tv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
