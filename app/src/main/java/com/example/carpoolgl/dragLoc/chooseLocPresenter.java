@@ -154,6 +154,7 @@ public class chooseLocPresenter implements
         latLng = cameraPosition.target;
         latitude = latLng.latitude;
         longitude = latLng.longitude;
+        chooseLocV.setLatLon(longitude,latitude);
         Log.e("latitude",latitude+"");
         Log.e("longitude",longitude+"");
         getAddress(latLng);
@@ -199,15 +200,22 @@ public class chooseLocPresenter implements
             if(Result!=null&&Result.getRegeocodeAddress()!=null
                     && Result.getRegeocodeAddress().getFormatAddress()!=null){
                 String[] ad = Result.getRegeocodeAddress().getFormatAddress().split("道");
-                address = Result.getRegeocodeAddress().getDistrict()+" "+
-                        Result.getRegeocodeAddress().getTownship()+" "+
-                        ad[1];
+//                address = Result.getRegeocodeAddress().getDistrict()+" "+
+//                        Result.getRegeocodeAddress().getTownship()+" "+
+//                        ad[1];
+                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad[1];
                 Log.e("逆编码回调的地址0",address);
-                Log.e("逆编码回调的地址1",Result.getRegeocodeAddress().getFormatAddress());
-                Log.e("逆编码回调的地址2",Result.getRegeocodeAddress().getBuilding());
-                Log.e("逆编码回调的地址2",ad[1]);
+                Log.e("逆编码回调的地址1",Result.getRegeocodeAddress().getFormatAddress());//江苏省苏州市姑苏区双塔街道杨枝二村苏大家属区18幢杨枝二村苏大家属区
+                Log.e("逆编码回调的地址2",Result.getRegeocodeAddress().getBuilding());//
+                Log.e("逆编码回调的地址3",Result.getRegeocodeAddress().getCity());//苏州市
+                Log.e("逆编码回调的地址4",Result.getRegeocodeAddress().getCountry());//中国
+                Log.e("逆编码回调的地址5",Result.getRegeocodeAddress().getDistrict());//姑苏区
+                Log.e("逆编码回调的地址6",Result.getRegeocodeAddress().getNeighborhood());//
+                Log.e("逆编码回调的地址7",Result.getRegeocodeAddress().getProvince());//江苏省
+                Log.e("逆编码回调的地址8",Result.getRegeocodeAddress().getTownship());//双塔街道
             }
             chooseLocV.LocInfo_SetText(address);
+
             setMarker(latLng,location_.getCity(),address);
         }
     }
@@ -226,6 +234,7 @@ public class chooseLocPresenter implements
     }
 
     public void destory(){
+        if(mLocClient!=null)
         mLocClient.stopLocation();
         mapView.onDestroy();
     }
