@@ -56,7 +56,9 @@ public class SearchRecycAdapter extends RecyclerView.Adapter<SearchRecycAdapter.
                         HashMap<String, String> map = listString.get(getLayoutPosition());
                         String title = map.get("name");
                         String content = map.get("address");
-                        onItemClickListener.OnItemclick(v,title+" "+content);
+                        double lat = Double.valueOf(map.get("lat"));
+                        double lon = Double.valueOf(map.get("lon"));
+                        onItemClickListener.OnItemclick(v,title+" "+content,lat,lon);
 //                        for(String title:map.keySet()){
 //                            String content = map.get(title);
 //                            onItemClickListener.OnItemclick(v,title+" "+content);
@@ -75,9 +77,9 @@ public class SearchRecycAdapter extends RecyclerView.Adapter<SearchRecycAdapter.
         /**
          * 当recyclerview某个被点击的时候回调
          * @param view  点击item的视图
-         * @param data  点击得到数据
+         * @param data1  点击得到数据
          */
-        void OnItemclick(View view,String data);
+        void OnItemclick(View view,String data1,double lat,double lon);
 
 
     }
