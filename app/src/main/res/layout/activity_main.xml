@@ -1,39 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorPrimary"
+    android:background="@color/blue"
     tools:context=".MainActivity">
+<!--    <include-->
+<!--        android:id="@+id/include2"-->
+<!--        layout="@layout/drawer_view" />-->
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="130dp"
+        android:layout_gravity="center|top"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="1dp"
         android:layout_marginTop="30dp"
-        android:layout_gravity="center|top">
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="5dp"
                     android:layout_height="5dp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="30dp"
-                    android:background="@drawable/circle_start"
-                    android:layout_gravity="center"/>
+                    android:background="@drawable/circle_start" />
+
                 <TextView
                     android:id="@+id/getOn_TV"
                     android:layout_width="match_parent"
@@ -43,61 +64,88 @@
                     android:gravity="center|left"
                     android:text="从哪儿上车" />
             </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@android:color/white"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/darker_gray" />
-                </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="40dp"
-               android:orientation="horizontal">
-               <TextView
-                   android:layout_width="5dp"
-                   android:layout_height="5dp"
-                   android:layout_marginLeft="30dp"
-                   android:background="@drawable/circle_end"
-                   android:layout_gravity="center"/>
-               <TextView
-                   android:id="@+id/getOff_TV"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:layout_marginLeft="10dp"
-                   android:gravity="center|left"
-                   android:text="从哪儿下车"
-                    />
 
-           </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@android:color/white"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/circle_end" />
+
+                <TextView
+                    android:id="@+id/getOff_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center|left"
+                    android:text="从哪儿下车" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintStart_toStartOf="parent">
+        <ImageButton
+            android:id="@+id/PersonalInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:elevation="2dp"
+            app:srcCompat="@drawable/round_supervisor_account_black_48" />
+        </androidx.cardview.widget.CardView>
 
-
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_marginBottom="92dp"-->
-<!--        app:cardCornerRadius="5dp"-->
+<!--    <TextView-->
+<!--        android:id="@+id/drawer_fog"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="invisible"-->
+<!--        android:elevation="3dp"-->
+<!--        android:background="@color/fog"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.803"-->
-<!--        app:layout_constraintStart_toStartOf="parent">-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/imageButton2"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="#00000000"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-<!--            app:srcCompat="@drawable/round_supervisor_account_black_48" />-->
-<!--    </androidx.cardview.widget.CardView>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/nav_menu"/>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
