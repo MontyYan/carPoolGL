@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="80dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:text="请输入手机号码"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:gravity="center|left" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:text="为了方便联系，请输入常用手机号"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="30dp"
+        android:hint="输入手机号码"
+        android:textSize="24sp"
+        app:met_floatingLabel="highlight"
+        app:met_maxCharacters="11"
+        app:met_minCharacters="0"
+        app:met_iconLeft="@drawable/call_black_48dp"
+        app:met_iconPadding="2dp"
+        app:met_clearButton="true"
+        android:lines="1"
+        app:met_baseColor="#982360"
+        app:met_primaryColor="#0056d3"
+        app:met_errorColor="#ddaa00" />
+
+<!--    <com.dd.CircularProgressButton-->
+<!--        android:id="@+id/btnWithText"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="64dp"-->
+<!--        android:layout_marginLeft="60dp"-->
+<!--        android:layout_marginRight="60dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="18sp"-->
+<!--        app:cpb_textComplete="@string/Complete"-->
+<!--        app:cpb_textError="@string/Error"-->
+<!--        app:cpb_textIdle="@string/Upload" />-->
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button_normal"
+        android:text="登录"/>
+
+
+</LinearLayout>
