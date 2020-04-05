@@ -32,13 +32,20 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/login_result"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="登录状态"/>
     <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/phone_num_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="30dp"
         android:hint="输入手机号码"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:met_floatingLabel="highlight"
         app:met_maxCharacters="11"
         app:met_minCharacters="0"
@@ -46,25 +53,29 @@
         app:met_iconPadding="2dp"
         app:met_clearButton="true"
         android:lines="1"
-        app:met_baseColor="#982360"
+        app:met_helperText="Integer"
+        app:met_baseColor="@color/black"
         app:met_primaryColor="#0056d3"
         app:met_errorColor="#ddaa00" />
 
-<!--    <com.dd.CircularProgressButton-->
-<!--        android:id="@+id/btnWithText"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="64dp"-->
-<!--        android:layout_marginLeft="60dp"-->
-<!--        android:layout_marginRight="60dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="18sp"-->
-<!--        app:cpb_textComplete="@string/Complete"-->
-<!--        app:cpb_textError="@string/Error"-->
-<!--        app:cpb_textIdle="@string/Upload" />-->
-
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/password_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="30dp"
+        android:hint="输入密码"
+        android:inputType="textPassword"
+        android:textSize="18sp"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/baseline_account_circle_black_48"
+        app:met_iconPadding="2dp"
+        app:met_clearButton="true"
+        android:lines="1"
+        app:met_baseColor="@color/black" />
 
     <Button
+        android:id="@+id/login_bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -72,6 +83,7 @@
         android:layout_marginRight="30dp"
         android:background="@drawable/button_normal"
         android:text="登录"/>
+
 
 
 </LinearLayout>
