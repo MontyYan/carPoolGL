@@ -16,6 +16,7 @@ import com.example.carpoolgl.login.loginPresenter;
 import com.example.carpoolgl.login.loginView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
 
     private Button login_bt;
 
-    private EditText phone_num_tv;
+    private MaterialEditText phone_num_et;
+    private MaterialEditText password_et;
     private loginPresenter loginP;
     private TextView login_result;//测试用
 
@@ -58,9 +60,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     public void init(){
         login_bt = findViewById(R.id.login_bt);
         login_bt.setOnClickListener(this);
-        phone_num_tv = findViewById(R.id.phone_num_et);
-        phone_num_tv.setError("123");
-
+        phone_num_et = findViewById(R.id.phone_num_et);
+        password_et = findViewById(R.id.password_et);
         login_result = findViewById(R.id.login_result);
 
     }
@@ -77,7 +78,7 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     public void login(){
 //        loginP = new loginPresenter();
 //        loginP.attachView(this);
-        getPresenter().login(phone_num_tv.getText().toString(),"12312",login_result);
+        getPresenter().login(phone_num_et.getText().toString(),password_et.getHelperText(),login_result);
     }
 
 
