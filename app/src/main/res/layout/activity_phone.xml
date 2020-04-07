@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PhoneActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            app:srcCompat="@drawable/round_keyboard_arrow_left_black_48" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:text="请输入手机号码"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:gravity="center|left" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:layout_marginLeft="20dp"
+            android:text="为了方便联系，请输入常用手机号码"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/phone_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="30dp"
+        android:hint="输入手机号"
+        android:textSize="18sp"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/baseline_account_circle_black_48"
+        app:met_iconPadding="2dp"
+        app:met_clearButton="true"
+        android:lines="1"
+        app:met_baseColor="@color/black"
+        app:met_primaryColor="@color/black"
+        app:met_errorColor="@color/red"/>
+
+
+
+    <Button
+        android:id="@+id/next_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button_normal"
+        android:text="下一步"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+        <com.alimuzaffar.lib.pin.PinEntryEditText
+            android:id="@+id/inputcode_editlinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textIsSelectable="false"
+            android:textSize="19sp"
+            android:textColor="#292929"
+            android:gravity="center"
+            android:layout_gravity="center"
+            app:pinBackgroundIsSquare="true"
+            app:pinBackgroundDrawable="@drawable/bg_bin"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
