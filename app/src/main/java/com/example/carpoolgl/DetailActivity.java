@@ -3,6 +3,8 @@ package com.example.carpoolgl;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MotionEventCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,12 +29,20 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.example.carpoolgl.bean.orderBean;
+import com.example.carpoolgl.recyclerView.SearchRecycAdapter;
+import com.example.carpoolgl.recyclerView.ordersRecycAdapter;
+import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+//import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity implements
         View.OnClickListener, RouteSearch.OnRouteSearchListener {
@@ -45,7 +55,8 @@ public class DetailActivity extends AppCompatActivity implements
     private TextView person_num;
     private TextView Fog;
     private TextView money;
-    private Button publish_bt;
+    private FloatingActionButton publish_bt;
+    private FloatingActionMenu menu;
 
     private TextView num_1;
     private TextView num_2;
@@ -64,6 +75,10 @@ public class DetailActivity extends AppCompatActivity implements
 
     TimePickerView pvTime;
 
+    private RecyclerView recyc;
+    private List<orderBean> recycData;
+    private ordersRecycAdapter recycAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +91,8 @@ public class DetailActivity extends AppCompatActivity implements
 
         //时间选择器
         timePicker();
+        initRecycData();
+        initRecyclerView();
     }
 
     public void getSearchInfo(){
@@ -137,6 +154,7 @@ public class DetailActivity extends AppCompatActivity implements
         start_time.setOnClickListener(this);
         person_num = findViewById(R.id.person_num);
         person_num.setOnClickListener(this);
+//        menu = findViewById(R.id.fab);
         publish_bt = findViewById(R.id.publish_bt);
         publish_bt.setOnClickListener(this);
 
@@ -153,6 +171,8 @@ public class DetailActivity extends AppCompatActivity implements
         num_4.setOnClickListener(this);
         num_certain = findViewById(R.id.num_certain);
         num_certain.setOnClickListener(this);
+
+        recyc = findViewById(R.id.detailRecycView);
     }
 
     @Override
@@ -168,15 +188,15 @@ public class DetailActivity extends AppCompatActivity implements
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 Fog.setVisibility(View.VISIBLE);
                 break;
-            case R.id.publish_bt:
-                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
-                intent.putExtra("geton",detail_geton_tv.getText());
-                intent.putExtra("getoff",detail_getoff_tv.getText());
-                intent.putExtra("time",start_time.getText());
-                intent.putExtra("number",person_num.getText());
-                intent.putExtra("money",money.getText());
-                startActivity(intent);
-                break;
+//            case R.id.publish_bt:
+//                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+//                intent.putExtra("geton",detail_geton_tv.getText());
+//                intent.putExtra("getoff",detail_getoff_tv.getText());
+//                intent.putExtra("time",start_time.getText());
+//                intent.putExtra("number",person_num.getText());
+//                intent.putExtra("money",money.getText());
+//                startActivity(intent);
+//                break;
             case R.id.detail_geton_tv:
                 finish();
                 break;
@@ -303,4 +323,29 @@ public class DetailActivity extends AppCompatActivity implements
             mRouteSearch.calculateDriveRouteAsyn(query);// 异步路径规划驾车模式查询
         }
     }
+    //*************************************************************************
+    public void initRecycData(){
+        recycData = new ArrayList<>();
+        String st= "七星区  桂林电子科技大学（花江）";
+        String en = "雁山区  桂林师范大学（雁山）";
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+        Date date = new Date(System.currentTimeMillis());
+        Integer num = 3;
+        for(int i=0;i<10;i++){
+            recycData.add(new orderBean(st,en,format.format(date),num));
+        }
+    }
+
+    public void initRecyclerView(){
+        recycAdapter = new ordersRecycAdapter(DetailActivity.this, recycData);
+        recyc.setAdapter(recycAdapter);
+        recyc.setLayoutManager(new LinearLayoutManager(
+                DetailActivity.this,
+                LinearLayoutManager.VERTICAL, //垂直方向
+                false             //非倒序
+                ));
+
+    }
+
+    //*************************************************************************
 }
