@@ -1,5 +1,6 @@
 package com.example.carpoolgl;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,10 +24,17 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
 
     private Button login_bt;
 
-    private MaterialEditText phone_num_et;
+//    private MaterialEditText phone_num_et;
     private MaterialEditText password_et;
     private loginPresenter loginP;
+    private TextView forget_tv;
+    private TextView register_tv;
+    private TextView msgLogin_tv;
+
+    private String phoneNum;
+
     private TextView login_result;//测试用
+
 
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -36,6 +44,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Intent intent = getIntent();
+        phoneNum = intent.getStringExtra("phone");
         init();
     }
 
@@ -52,17 +62,36 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     public void init(){
         login_bt = findViewById(R.id.login_bt);
         login_bt.setOnClickListener(this);
-        phone_num_et = findViewById(R.id.phone_num_et);
+//        phone_num_et = findViewById(R.id.phone_num_et);
         password_et = findViewById(R.id.password_et);
         login_result = findViewById(R.id.login_result);
-
+        forget_tv = findViewById(R.id.forget_tv);
+        forget_tv.setOnClickListener(this);
+        register_tv = findViewById(R.id.register_tv);
+        register_tv.setOnClickListener(this);
+        msgLogin_tv = findViewById(R.id.msgLogin_tv);
+        msgLogin_tv.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()){
             case R.id.login_bt:
                 login();
+                break;
+            case R.id.forget_tv:
+//                intent = new Intent(LoginActivity.this,)
+                break;
+            case R.id.register_tv:
+                intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                intent.putExtra("phone",phoneNum);
+                startActivity(intent);
+                break;
+            case R.id.msgLogin_tv:
+                intent = new Intent(LoginActivity.this,msgLoginActivity.class);
+                intent.putExtra("phone",phoneNum);
+                startActivity(intent);
                 break;
         }
     }
@@ -70,7 +99,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     public void login(){
 //        loginP = new loginPresenter();
 //        loginP.attachView(this);
-        getPresenter().login(phone_num_et.getText().toString(),password_et.getHelperText(),login_result);
+//        getPresenter().login(phone_num_et.getText().toString(),password_et.getHelperText(),login_result);
+        getPresenter().login("",password_et.getHelperText(),login_result);
     }
 
 
