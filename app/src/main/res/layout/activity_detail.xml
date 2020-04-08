@@ -19,7 +19,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -50,14 +50,14 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
             android:layout_width="match_parent"
-            android:layout_height="185dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginRight="5dp"
             android:background="@color/white"
-            android:elevation="5dp"
-            app:cardCornerRadius="10dp">
+            android:elevation="1dp"
+            app:cardCornerRadius="5dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -133,9 +133,6 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="28sp"
                         android:text="5"/>
-
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -143,62 +140,7 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="30dp"
-                    android:background="@android:color/white"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/darker_gray" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_weight="1">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="没有合适的拼车方案?"
-                            android:gravity="center"
-                            android:textSize="16sp"
-                            android:textColor="@color/header_toast"
-                            android:layout_weight="1"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="发布自己的行程"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/publish_bt"
-                        android:layout_width="70dp"
-                        android:layout_height="36dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:background="@drawable/button_normal"
-                        android:text="发布"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="2dp"
                     android:background="@android:color/white"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp">
@@ -210,7 +152,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="3dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -245,17 +188,86 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/publish_btq"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/blue"-->
+<!--            android:layout_gravity="right"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:src="@drawable/round_add_black_24" />-->
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/route_fab"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/colorAccent"-->
+<!--            android:layout_gravity="right"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:src="@drawable/round_add_black_24" />-->
+
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            app:menu_showShadow="false"
+            app:menu_openDirection="down"
+            app:menu_colorNormal="@color/colorAccent"
+            app:menu_icon="@drawable/round_add_black_24"
+            app:menu_labels_ellipsize="end"
+            app:menu_labels_singleLine="true"
+            app:menu_backgroundColor="#ccffffff">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/publish_bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/blue"
+                android:src="@drawable/car_black_24dp"
+                app:fab_size="mini"
+                app:fab_label="发布自己的行程" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/num_pitch"
+                android:src="@drawable/road_black_24dp"
+                app:fab_size="mini"
+                app:fab_label="查看线路" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/find"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/num_pitch"
+                android:src="@drawable/lists_black_24dp"
+                app:fab_size="mini"
+                app:fab_label="查看相似订单" />
+
+
+
+        </com.github.clans.fab.FloatingActionMenu>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="40dp"
-        android:elevation="16dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/linear_circular"
+        android:elevation="1dp"
+        android:orientation="vertical"
+        android:layout_marginTop="150dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/detailRecycView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="28dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/fog"
