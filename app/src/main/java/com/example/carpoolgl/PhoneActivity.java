@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +36,8 @@ public class PhoneActivity extends AppCompatActivity implements View.OnClickList
 //                IsPhoneNum(phone_et.getText().toString());
                 Intent intent = new Intent(PhoneActivity.this,LoginActivity.class);
                 if(IsPhoneNum(phone_et.getText().toString())){
-                    intent.putExtra("phone",phone_et.getText());
+                    intent.putExtra("phone",phone_et.getText().toString());
+                    Log.i("PhoneAactivity",phone_et.getText().toString());
                     startActivity(intent);
                 }
                 break;
