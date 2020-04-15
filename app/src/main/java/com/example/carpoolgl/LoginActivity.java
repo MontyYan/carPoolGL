@@ -3,13 +3,16 @@ package com.example.carpoolgl;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.util.LogPrinter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.carpoolgl.base.baseActivity;
 import com.example.carpoolgl.bean.User;
@@ -42,7 +45,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     private TextView forget_tv;
     private TextView register_tv;
     private TextView msgLogin_tv;
-
+    private ProgressBar login_progress;
+    private TextView cutDown_tv;
     private String phoneNum;
 
     private TextView login_result;//测试用
@@ -83,6 +87,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         register_tv.setOnClickListener(this);
         msgLogin_tv = findViewById(R.id.msgLogin_tv);
         msgLogin_tv.setOnClickListener(this);
+        login_progress = findViewById(R.id.login_progress);
+        cutDown_tv = findViewById(R.id.cutDown_tv);
     }
 
     @Override
@@ -91,6 +97,12 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         switch (v.getId()){
             case R.id.login_bt:
                 login();
+                login_bt.setVisibility(View.GONE);
+                login_progress.setVisibility(View.VISIBLE);
+                password_et.setFocusable(false);
+                password_et.setFocusableInTouchMode(false);
+                password_et.setOnClickListener(null);
+                cutDown();
                 break;
             case R.id.forget_tv:
 //                intent = new Intent(LoginActivity.this,)
@@ -116,6 +128,22 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         getPresenter().login(phoneNum,password_et.getText().toString(),login_result);
     }
 
+    public void cutDown(){
+        CountDownTimer timer = new CountDownTimer(20000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                cutDown_tv.setText(millisUntilFinished/1000+"s");
+            }
+
+            @Override
+            public void onFinish() {
+                cutDown_tv.setVisibility(View.GONE);
+                login_progress.setVisibility(View.GONE);
+                login_bt.setVisibility(View.VISIBLE);
+                Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
+            }
+        }.start();
+    }
 
     public void showResonse(String data){
 //        res_tv.setText(data);
@@ -151,7 +179,6 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 //获取loginRsult
                 Integer loginResult = jsonObject.getInteger("loginResult");
@@ -164,7 +191,6 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
                     Gson gson = new Gson();
                     //使用Gson直接逆序列化
                     User user = gson.fromJson(jsonUser.toString(), User.class);
-
                     Looper.prepare();
                     mHandler handler = new mHandler(getApplicationContext());
                     Message msg = handler.obtainMessage();
@@ -172,33 +198,8 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
                     msg.obj = user;
                     Log.i("LoginActivity","jsonObject>>>>>"+jsonObject.toJSONString());
                     Log.i("LoginActivity","msg>>>>>"+msg.obj.toString());
-//                    Looper.prepare();
                     handler.sendMessage(msg);
                     Looper.loop();
-//            Looper.loop();
-//            handler.insert();
-//            //获取userInfo
-//            JSONObject jsonUser = jsonObject.getJSONObject("userInfo");
-//            Gson gson = new Gson();
-//            //使用Gson直接逆序列化
-//            User user = gson.fromJson(jsonUser.toString(), User.class);
-//            //获取数据库操作对象
-//            MydbHelper mydbHelper = new MydbHelper(this,"user.db",null,1);
-//            SQLiteDatabase db = mydbHelper.getWritableDatabase();
-//            //
-//            try{
-//                db.beginTransaction();
-//                String sql = "insert into user_info(phone,sequence,password,login_ways,register_date,sex,identity,emergency_phone,name,identity_id)"
-//                        +" values (?,?,?,?,?,?,?,?,?,?)";
-//                db.execSQL(sql,
-//                        new Object[]{user.getPhone(),user.getUserSeq(),user.getPassword(),user.getLoginWays(),user.getRegisterDate(),user.getSex(),user.getIdentity(),user.getEcyPhone(),user.getName(),user.getIdentityId()});
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }finally {
-//                db.setTransactionSuccessful();
-//                db.endTransaction();
-//                db.close();
-//            }
                 }
 
             }
