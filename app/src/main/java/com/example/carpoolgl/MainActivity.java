@@ -55,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getOffTv = findViewById(R.id.getOff_TV);
         getOffTv.setOnClickListener(this);
 
-        cre_db_Test = findViewById(R.id.cre_db);
-        cre_db_Test.setOnClickListener(this);
+        //创建数据库button test
+//        cre_db_Test = findViewById(R.id.cre_db);
+//        cre_db_Test.setOnClickListener(this);
 
         mydbHelper = new MydbHelper(this,"user.db",null,1);
 //        QuitTv.findViewById(R.id.quit);
@@ -97,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
 
-            case R.id.cre_db:
-//                mydbHelper.getWritableDatabase();
-                insert();
-                break;
+//            case R.id.cre_db:
+////                mydbHelper.getWritableDatabase();
+//                insert();
+//                break;
         }
     }
 
