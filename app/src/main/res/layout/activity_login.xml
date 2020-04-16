@@ -123,7 +123,7 @@
             android:layout_marginRight="40dp"
             android:background="@drawable/button_normal"
             android:text="登录"
-            android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +133,7 @@
             android:id="@+id/login_progress"
             android:layout_width="52dp"
             android:layout_height="62dp"
-
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -146,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10s"
-
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/login_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
