@@ -2,6 +2,7 @@ package com.example.carpoolgl;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
@@ -28,6 +29,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 
@@ -96,13 +99,18 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         Intent intent;
         switch (v.getId()){
             case R.id.login_bt:
-                login();
-                login_bt.setVisibility(View.GONE);
-                login_progress.setVisibility(View.VISIBLE);
-                password_et.setFocusable(false);
-                password_et.setFocusableInTouchMode(false);
-                password_et.setOnClickListener(null);
-                cutDown();
+                if(IsPassword(password_et.getText().toString())){
+                    login();
+                    //登录确定按钮消失，
+                    login_bt.setVisibility(View.GONE);
+                    cutDown_tv.setVisibility(View.VISIBLE);
+                    login_progress.setVisibility(View.VISIBLE);
+                    //设置密码输入框不可点击，无焦点
+                    password_et.setFocusable(false);
+                    password_et.setFocusableInTouchMode(false);
+                    password_et.setOnClickListener(null);
+                    cutDown();
+                }
                 break;
             case R.id.forget_tv:
 //                intent = new Intent(LoginActivity.this,)
@@ -120,16 +128,19 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         }
     }
 
+    //接入P层接口
     public void login(){
 //        loginP = new loginPresenter();
 //        loginP.attachView(this);
 //        getPresenter().login(phone_num_et.getText().toString(),password_et.getHelperText(),login_result);
         Log.i("user",phoneNum+" "+password_et.getHelperText());
-        getPresenter().login(phoneNum,password_et.getText().toString(),login_result);
+//        getPresenter().login(phoneNum,password_et.getText().toString(),login_result);
+        getPresenter().login(phoneNum,password_et.getText().toString(),login_result,login_progress,login_bt);
     }
 
+    //登录时间倒计时
     public void cutDown(){
-        CountDownTimer timer = new CountDownTimer(20000,1000) {
+        CountDownTimer timer = new CountDownTimer(15000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 cutDown_tv.setText(millisUntilFinished/1000+"s");
@@ -141,8 +152,23 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
                 login_progress.setVisibility(View.GONE);
                 login_bt.setVisibility(View.VISIBLE);
                 Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
+                //设置密码输入框可点击，有焦点
+                password_et.setFocusable(true);
+                password_et.setFocusableInTouchMode(true);
+                password_et.setOnClickListener(LoginActivity.this);
             }
         }.start();
+    }
+
+    //判断密码格式是否正确
+    public boolean IsPassword(String str){
+        final Drawable dr = getResources().getDrawable(R.drawable.dir5);
+        dr.setBounds(0, 0, 10, 10); //必须设置大小，否则不显示
+        if(str.length()<4){
+            password_et.setError("密码长度低于四位",dr);
+            return false;
+        }
+        return true;
     }
 
     public void showResonse(String data){
