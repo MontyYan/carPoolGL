@@ -46,7 +46,6 @@ public class PhoneActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public boolean IsPhoneNum(String str){
-
         final Drawable dr = getResources().getDrawable(R.drawable.dir5);
         dr.setBounds(0, 0, 10, 10); //必须设置大小，否则不显示
 
@@ -56,44 +55,11 @@ public class PhoneActivity extends AppCompatActivity implements View.OnClickList
             phone_et.setError("手机号码必须为数字",dr);
             return false;
         }
-
         if(str.length()!=11){
             phone_et.setError("手机号码只能为11位",dr);
             return false;
         }
         return true;
-
-
-//        phone_et.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//                if(phone_et.getText().length()==11){
-//                    Pattern p = Pattern.compile("^[0-9]+");
-//                    Matcher m = p.matcher(phone_et.getText().toString());
-//                    if(m.find()){
-//                        phone_et.setError("电话号码格式错误2",dr);
-//                    }else{
-//                        Intent intent = new Intent(PhoneActivity.this,LoginActivity.class);
-//                        intent.putExtra("phone",phone_et.getText());
-//                        startActivity(intent);
-//                    }
-//                }else{
-//                    phone_et.setError("电话号码格式错误1",dr);
-//                }
-//            }
-//        });
-//        return true;
     }
 
 }
