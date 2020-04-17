@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.base.baseActivity;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.bean.User_;
@@ -101,14 +102,7 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
             case R.id.login_bt:
                 if(IsPassword(password_et.getText().toString())){
                     login();
-                    //登录确定按钮消失，
-                    login_bt.setVisibility(View.GONE);
-                    cutDown_tv.setVisibility(View.VISIBLE);
-                    login_progress.setVisibility(View.VISIBLE);
-                    //设置密码输入框不可点击，无焦点
-                    password_et.setFocusable(false);
-                    password_et.setFocusableInTouchMode(false);
-                    password_et.setOnClickListener(null);
+                    setVisible(0);
                     cutDown();
                 }
                 break;
@@ -140,24 +134,45 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
 
     //登录时间倒计时
     public void cutDown(){
-        CountDownTimer timer = new CountDownTimer(15000,1000) {
+        final CountDownTimer timer = new CountDownTimer(15000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 cutDown_tv.setText(millisUntilFinished/1000+"s");
+                if(STATIC_USERINFO.getCon().equals(1)){
+                    setVisible(1);
+                    cancel();
+                }
             }
 
             @Override
             public void onFinish() {
-                cutDown_tv.setVisibility(View.GONE);
-                login_progress.setVisibility(View.GONE);
-                login_bt.setVisibility(View.VISIBLE);
+                setVisible(1);
                 Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
-                //设置密码输入框可点击，有焦点
-                password_et.setFocusable(true);
-                password_et.setFocusableInTouchMode(true);
-                password_et.setOnClickListener(LoginActivity.this);
             }
         }.start();
+    }
+
+    //设置倒计时textView、progress、button、editText可见情况
+    public void setVisible(int s){
+        switch (s){
+            case 0: //登录中状态
+                login_bt.setVisibility(View.GONE);              //登录确认bt消失
+                cutDown_tv.setVisibility(View.VISIBLE);         //倒计时progress显示
+                login_progress.setVisibility(View.VISIBLE);     //倒计时progress显示
+                password_et.setFocusable(false);                //登录编辑editext不可编辑
+                password_et.setFocusableInTouchMode(false);
+                password_et.setOnClickListener(null);
+                break;
+
+            case 1: //登录结束状态
+                cutDown_tv.setVisibility(View.GONE);            //倒计时tv消失
+                login_progress.setVisibility(View.GONE);        //倒计时progress消失
+                login_bt.setVisibility(View.VISIBLE);           //登录确认bt显示
+                password_et.setFocusable(true);                 //登录编辑editext可编辑
+                password_et.setFocusableInTouchMode(true);
+                password_et.setOnClickListener(LoginActivity.this);
+                break;
+        }
     }
 
     //判断密码格式是否正确
@@ -181,7 +196,6 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
             Log.i("LoginActivity",u.getId()+"");
             Log.i("LoginActivity",u.getPhoneNum());
             Log.i("LoginActivity",u.getPassword());
-
         }
     }
 
@@ -201,13 +215,13 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     * */
     @Override
     public void onloginResult(final String result) {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 //获取loginRsult
                 Integer loginResult = jsonObject.getInteger("loginResult");
+                STATIC_USERINFO.setCon(loginResult);
                 /*loginResult==1：登录成功
                  * 解析userInfo，并将user信息存入本地数据库[user.db]
                  * */
