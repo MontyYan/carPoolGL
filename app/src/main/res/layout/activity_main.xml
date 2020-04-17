@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
                 android:layout_marginBottom="20dp"
-                android:text="退出登录"
+                android:text="切换账号"
                 android:gravity="center"
                 android:drawableLeft="@drawable/baseline_power_settings_new_black_24"
                 android:paddingLeft="20sp"
