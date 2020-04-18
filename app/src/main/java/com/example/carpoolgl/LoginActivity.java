@@ -52,10 +52,7 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     private ProgressBar login_progress;
     private TextView cutDown_tv;
     private String phoneNum;
-
     private TextView login_result;//测试用
-
-
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final int LOGIN_TOAST = 1;
@@ -206,7 +203,6 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
 //            this.loginP.detachView();
 //        }
     }
-
 
     /*
     * 得到登录请求结果
