@@ -39,7 +39,9 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         implements View.OnClickListener,loginView {
 
     //作为Message.what标识
-    private static final int UPDATA_DB = 1;
+    private static final int UPDATA_SP = 1;
+    private static final int STATRT_ACT = 5;
+    private static final String TAG = "LoginActivity";
 
     private Button login_bt;
 
@@ -135,6 +137,7 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
             @Override
             public void onTick(long millisUntilFinished) {
                 cutDown_tv.setText(millisUntilFinished/1000+"s");
+                //
                 if(STATIC_USERINFO.getCon().equals(1)){
                     setVisible(1);
                     cancel();
@@ -212,14 +215,15 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
     @Override
     public void onloginResult(final String result) {
         new Thread(new Runnable() {
-            @Override
-            public void run() {
+                @Override
+                public void run() {
                 JSONObject jsonObject = JSONObject.parseObject(result);
                 //获取loginRsult
                 Integer loginResult = jsonObject.getInteger("loginResult");
                 STATIC_USERINFO.setCon(loginResult);
-                /*loginResult==1：登录成功
-                 * 解析userInfo，并将user信息存入本地数据库[user.db]
+                /* loginResult==1：登录成功
+                 * loginResult==0：登录失败
+                 * 解析userInfo，并将user信息存入本地sharepreferences
                  * */
                 if(loginResult.equals(1)){
                     //获取userInfo
@@ -229,17 +233,40 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
                     User user = gson.fromJson(jsonUser.toString(), User.class);
                     Looper.prepare();
                     mHandler handler = new mHandler(getApplicationContext());
-                    Message msg = handler.obtainMessage();
-                    msg.what = UPDATA_DB;
+                    final Message msg = handler.obtainMessage();
+                    msg.what = UPDATA_SP;
                     msg.obj = user;
-                    Log.i("LoginActivity","jsonObject>>>>>"+jsonObject.toJSONString());
-                    Log.i("LoginActivity","msg>>>>>"+msg.obj.toString());
+                    Log.i(TAG,"jsonObject>>>>>"+jsonObject.toJSONString());
+                    Log.i(TAG,"msg>>>>>"+msg.obj.toString());
                     handler.sendMessage(msg);
+
+                    Log.i(TAG,"conCode>>>>>"+STATIC_USERINFO.getCon());
+                    if(STATIC_USERINFO.getCon().equals(1)){
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    Thread.sleep(2000);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                Looper.prepare();
+                                mHandler handler2 = new mHandler(getApplicationContext());
+                                Message msg2 = handler2.obtainMessage();
+                                msg2.what = STATRT_ACT;
+                                handler2.sendMessage(msg2);
+                                Looper.loop();
+                            }
+                        }).start();
+                    }
                     Looper.loop();
+
                 }
 
             }
         }).start();
+        Log.i(TAG,"thread运行结束");
+        Log.i(TAG,STATIC_USERINFO.getCon()+"");
 
     }
 
