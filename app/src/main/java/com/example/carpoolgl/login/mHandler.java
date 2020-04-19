@@ -2,6 +2,7 @@ package com.example.carpoolgl.login;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -13,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.carpoolgl.LoginActivity;
+import com.example.carpoolgl.MainActivity;
 import com.example.carpoolgl.Static.STATIC_CLASS;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.dataBase.MydbHelper;
@@ -21,7 +24,8 @@ import org.w3c.dom.Text;
 
 public class mHandler extends Handler {
     private static final int UPDATA_TV = 0;
-    private static final int UPDATA_DB = 1;
+    private static final int UPDATA_SP = 1;
+    private static final int STATRT_ACT = 5;
 //    private static final int LOGIN_PROGRESS = 2;
 
     private TextView LoginResult_tv;
@@ -57,7 +61,6 @@ public class mHandler extends Handler {
         this.Login_button = Login_button;
     }
 
-
     @Override
     public void handleMessage(Message msg){
         switch (msg.what){
@@ -73,10 +76,16 @@ public class mHandler extends Handler {
                     Login_progress.setVisibility(View.GONE);
                 }
                 break;
-            case UPDATA_DB:
+            case UPDATA_SP:
                 User user = (User)msg.obj;
                 saveInfo(user);
 //                insert(user);
+                break;
+            case STATRT_ACT:
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setClass(context,MainActivity.class);
+                context.startActivity(intent);
                 break;
 //            case LOGIN_PROGRESS:
 //
