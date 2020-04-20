@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //创建数据库button test
 //        cre_db_Test = findViewById(R.id.cre_db);
 //        cre_db_Test.setOnClickListener(this);
-        findLocInfo();
+        findLocInfo_();
         mainPresenter mp = new mainPresenter(MainActivity.this);
         mp.attachView(this);
         mp.findLocUInfo();
@@ -133,7 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                deShareData();
                 Intent intent = new Intent(MainActivity.this, PhoneActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setClass(MainActivity.this,PhoneActivity.class);
                 startActivity(intent);
             }
         });
@@ -144,6 +148,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         dialog.show();
+    }
+    //退出登录后，没有登录，本地用户登录数据覆盖
+    public void deShareData(){
+        STATIC_USERINFO.setCon(0);
+        SharedPreferences.Editor shaEdit = getSharedPreferences("userinfo",MODE_PRIVATE).edit();
+        shaEdit.putInt("conCode",0);
+        shaEdit.putString("phone","未登录");
+        shaEdit.putString("registerDate","");
+        shaEdit.putString("sequence","");
+        shaEdit.apply();
+
     }
 
     //测试用，后删
@@ -173,11 +188,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void findLocInfo(){
-//        PhoneNum_Navheader_tv.setText(STATIC_USERINFO.getPhone()+"");
-        PhoneNum_Navheader_tv.setText("aksdjhfadsh");
-//        regDate_Navheader_tv.setText("注册日期："+STATIC_USERINFO.getRegisterDate());
-        regDate_Navheader_tv.setText("ahdsufhiasufd");
+    public void findLocInfo_(){
+        PhoneNum_Navheader_tv.setText(STATIC_USERINFO.getPhone()+"");
+//        PhoneNum_Navheader_tv.setText("aksdjhfadsh");
+        regDate_Navheader_tv.setText("注册日期："+STATIC_USERINFO.getRegisterDate());
+//        regDate_Navheader_tv.setText("ahdsufhiasufd");
     }
 
     //DrawerLayout滑动窗口
@@ -197,12 +212,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         View nav_header = mNavigation.inflateHeaderView(R.layout.nav_header_main);
-//        View headLayout = mNavigation.getHeaderView(0);
+//        View nav_header = mNavigation.getHeaderView(0);
         Log.i(TAG,nav_header+"");
         LinearLayout layout = nav_header.findViewById(R.id.header_layout);
         PhoneNum_Navheader_tv = layout.findViewById(R.id.PhoneNum_Navheader_tv);
+        PhoneNum_Navheader_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"点击",Toast.LENGTH_SHORT).show();
+            }
+        });
         Log.i(TAG,PhoneNum_Navheader_tv+"");
         regDate_Navheader_tv = layout.findViewById(R.id.regDate_Navheader_tv);
+        regDate_Navheader_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"点击",Toast.LENGTH_SHORT).show();
+            }
+        });
         Log.i(TAG,regDate_Navheader_tv+"");
         PhoneNum_Navheader_tv.setText("dsahfashdfo");
         Log.i(TAG,PhoneNum_Navheader_tv.getText().toString());
