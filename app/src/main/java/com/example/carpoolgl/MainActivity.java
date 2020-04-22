@@ -28,6 +28,7 @@ import com.example.carpoolgl.main.mainPresenter;
 import com.example.carpoolgl.main.mainView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
+import com.example.carpoolgl.routeTest.routeTestActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import org.xutils.view.annotation.ViewInject;
@@ -46,12 +47,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView QuitTv;
     private double mlatLong[]=new double[2];//记录当前位置的经纬度
     //创建数据库测试
-    private Button cre_db_Test;
+//    private Button cre_db_Test;
     private MydbHelper mydbHelper;
 
     //个人用户数据控件
     private TextView PhoneNum_Navheader_tv;
     private TextView regDate_Navheader_tv;
+
+    //路线测试
+//    private Button searchRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getOnTv.setOnClickListener(this);
         getOffTv = findViewById(R.id.getOff_TV);
         getOffTv.setOnClickListener(this);
+//        searchRoute = findViewById(R.id.searchRoute);
+//        searchRoute.setOnClickListener(this);
     }
 
     @Override
@@ -121,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            case R.id.cre_db:
 ////                mydbHelper.getWritableDatabase();
 //                insert();
+//                break;
+//            case R.id.searchRoute:
+//                intent = new Intent(MainActivity.this, routeTestActivity.class);
+//                startActivity(intent);
 //                break;
         }
     }
