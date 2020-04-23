@@ -32,6 +32,7 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.carpoolgl.bean.orderBean;
 import com.example.carpoolgl.recyclerView.SearchRecycAdapter;
 import com.example.carpoolgl.recyclerView.ordersRecycAdapter;
+import com.example.carpoolgl.route.RouteActivity;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -78,6 +79,8 @@ public class DetailActivity extends AppCompatActivity implements
     private RecyclerView recyc;
     private List<orderBean> recycData;
     private ordersRecycAdapter recycAdapter;
+
+    private FloatingActionButton fab_route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +176,8 @@ public class DetailActivity extends AppCompatActivity implements
         num_certain.setOnClickListener(this);
 
         recyc = findViewById(R.id.detailRecycView);
+        fab_route = findViewById(R.id.fab_route);
+        fab_route.setOnClickListener(this);
     }
 
     @Override
@@ -228,6 +233,13 @@ public class DetailActivity extends AppCompatActivity implements
                 Fog.setVisibility(View.INVISIBLE);
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 person_num.setText(num_certain.getText()+" >");
+                break;
+
+            case R.id.fab_route:
+                Intent intent = new Intent(DetailActivity.this, RouteActivity.class);
+                intent.putExtra("mStartPoint",mStartPoint);
+                intent.putExtra("mEndPoint",mEndPoint);
+                startActivity(intent);
                 break;
         }
     }
