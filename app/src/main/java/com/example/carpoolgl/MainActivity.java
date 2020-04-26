@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
+import com.amap.api.services.core.LatLonPoint;
 import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.dataBase.MydbHelper;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigation;
     private TextView QuitTv;
-    private double mlatLong[]=new double[2];//记录当前位置的经纬度
+    private LatLonPoint nowLatLon = new LatLonPoint(39.995576,116.481288);//记录当前位置的经纬度
     //创建数据库测试
 //    private Button cre_db_Test;
     private MydbHelper mydbHelper;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent = new Intent(MainActivity.this,SearchActivity.class);
                     intent.putExtra("Edit_select",flag);
                     intent.putExtra("nowLocation",nowLocation);
-                    intent.putExtra("nowLatLong",mlatLong);
+                    intent.putExtra("nowLatLon",nowLatLon);
                     startActivity(intent);
                 }else {
                     Toast.makeText(MainActivity.this,"请先登录账号",Toast.LENGTH_SHORT).show();
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent = new Intent(MainActivity.this,SearchActivity.class);
                     intent.putExtra("Edit_select",flag);
                     intent.putExtra("nowLocation",nowLocation);
-                    intent.putExtra("nowLatLong",mlatLong);
+                    intent.putExtra("nowLatLon",nowLatLon);
                     startActivity(intent);
                 }else {
                     Toast.makeText(MainActivity.this,"请先登录账号",Toast.LENGTH_SHORT).show();
@@ -264,8 +265,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //读取当前经纬度
     @Override
     public void setLatLon(double lon, double lat) {
-        mlatLong[0]=lon;
-        mlatLong[1]=lat;
+        nowLatLon.setLongitude(lon);
+        nowLatLon.setLatitude(lat);
     }
 
 
