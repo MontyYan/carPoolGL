@@ -1,9 +1,5 @@
 package com.example.carpoolgl;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MotionEventCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -11,12 +7,13 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusRouteResult;
@@ -29,8 +26,12 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.example.carpoolgl.Static.STATIC_USERINFO;
+import com.example.carpoolgl.base.baseActivity;
+import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.orderBean;
-import com.example.carpoolgl.recyclerView.SearchRecycAdapter;
+import com.example.carpoolgl.findOrders.fordersPresenter;
+import com.example.carpoolgl.findOrders.fordersView;
 import com.example.carpoolgl.recyclerView.ordersRecycAdapter;
 import com.example.carpoolgl.route.RouteActivity;
 import com.github.clans.fab.FloatingActionMenu;
@@ -38,16 +39,17 @@ import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 //import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.w3c.dom.Text;
-
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DetailActivity extends AppCompatActivity implements
-        View.OnClickListener, RouteSearch.OnRouteSearchListener {
+public class DetailActivity extends baseActivity<fordersView, fordersPresenter> implements
+        View.OnClickListener, RouteSearch.OnRouteSearchListener, fordersView {
 
+    private static final String TAG="DetailActivity";
+    private static final String TAG_2="findOrder_AC";
     private View bottom_Detail;
     private BottomSheetBehavior mBoSheetBehavior;
     private TextView detail_geton_tv;
@@ -57,6 +59,8 @@ public class DetailActivity extends AppCompatActivity implements
     private TextView Fog;
     private TextView money;
     private FloatingActionButton publish_bt;
+    private FloatingActionButton fab_route;
+    private FloatingActionButton fab_find;
     private FloatingActionMenu menu;
 
     private TextView num_1;
@@ -69,18 +73,25 @@ public class DetailActivity extends AppCompatActivity implements
     private String endAddr;
     private LatLonPoint mStartPoint = new LatLonPoint(39.942295,116.335891);//起点，39.942295,116.335891
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);//终点，39.995576,116.481288
+    private DrivePath drivePath;
 
     private DriveRouteResult mDriveRouteResult;
     private final int ROUTE_TYPE_DRIVE = 2;
     private RouteSearch mRouteSearch;
 
-    TimePickerView pvTime;
+    private TimePickerView pvTime;
 
     private RecyclerView recyc;
     private List<orderBean> recycData;
     private ordersRecycAdapter recycAdapter;
 
-    private FloatingActionButton fab_route;
+    private TextView finding_order_tv;
+    private ProgressBar finding_order_pb;
+
+    //初始化订单bean
+    private RelOrder order = new RelOrder(STATIC_USERINFO.getUserSeq());
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +102,22 @@ public class DetailActivity extends AppCompatActivity implements
         searchRouteResult(ROUTE_TYPE_DRIVE, RouteSearch.DrivingDefault);
         mBoSheetBehavior = BottomSheetBehavior.from(bottom_Detail);
         mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
+        initOrder();//初始化order默认数据
+        findOrders();
         //时间选择器
         timePicker();
         initRecycData();
         initRecyclerView();
+    }
+
+    @Override
+    public fordersPresenter createPresenter() {
+        return new fordersPresenter();
+    }
+
+    @Override
+    public fordersView createView() {
+        return this;
     }
 
     public void getSearchInfo(){
@@ -104,24 +126,39 @@ public class DetailActivity extends AppCompatActivity implements
         endAddr = intent.getStringExtra("endAddress");
         detail_geton_tv.setText(startAddr);
         detail_getoff_tv.setText(endAddr);
-        double[] Spoint=intent.getDoubleArrayExtra("startLatLon");
-        double[] Epoint=intent.getDoubleArrayExtra("endLatLon");
-        mStartPoint = new LatLonPoint(Spoint[1],Spoint[0]);
-        Log.i("DetailActivity",Spoint[0]+" "+Spoint[1]);
-        Log.i("DetailActivity",Epoint[0]+" "+Epoint[1]);
-        mEndPoint = new LatLonPoint(Epoint[1],Epoint[0]);
-//        mEndPoint = new LatLonPoint(100.650994,31.296645);
+        mStartPoint = intent.getParcelableExtra("startLatLon");
+        Log.i("DetailActivity",mStartPoint.toString());
+        Log.i("DetailActivity",mEndPoint.toString());
+        mEndPoint = intent.getParcelableExtra("endLatLon");
+    }
+    //*************************************************************************
+    //对order进行部分数据进行默认初始化（默认当前时间，默认乘客人数为1）
+    public void initOrder(){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        order.setStartTime(df.format(new Date()));
+        order.setPassNum(1);
+        order.setCondition(0);  //仅发布，等待接单
     }
     //*************************************************************************
     public void timePicker(){
         pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
-                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd  HH:mm");
+                DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm");
                 String da= sdf.format(date);
+//                Date date_=null;
+//                try{
+//                    date_ = sdf.parse(da);
+//                    Log.i(TAG,">>>>>"+date_.toString());
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+
 //                tvTime.setText(getTime(date));
-                start_time.setText(da+" >");
-//                Toast.makeText(DetailActivity.this,da,Toast.LENGTH_SHORT).show();
+                start_time.setText(da.substring(5)+" >");   //截去年份，剩下字段显示在ui
+                order.setStartTime(da);
+
+                Toast.makeText(DetailActivity.this,order.getStartTime(),Toast.LENGTH_SHORT).show();
             }
         }).setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
             @Override
@@ -174,15 +211,18 @@ public class DetailActivity extends AppCompatActivity implements
         num_4.setOnClickListener(this);
         num_certain = findViewById(R.id.num_certain);
         num_certain.setOnClickListener(this);
-
         recyc = findViewById(R.id.detailRecycView);
         fab_route = findViewById(R.id.fab_route);
         fab_route.setOnClickListener(this);
+        fab_find = findViewById(R.id.fab_find);
+        fab_find.setOnClickListener(this);
+
+        finding_order_tv = findViewById(R.id.finding_order_tv);
+        finding_order_pb = findViewById(R.id.finding_order_pb);
     }
 
     @Override
     public void onClick(View v) {
-        GradientDrawable mdraw;
         switch (v.getId()){
             case R.id.start_time:
 //                mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -193,15 +233,21 @@ public class DetailActivity extends AppCompatActivity implements
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 Fog.setVisibility(View.VISIBLE);
                 break;
-//            case R.id.publish_bt:
-//                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+            case R.id.publish_bt:
+                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+                ReinitlOrder(); //对订单order的剩余数据进行赋值
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("relorder",order);
+                intent.putExtra("data",bundle);
+//                Log.i(TAG,order.toString());
 //                intent.putExtra("geton",detail_geton_tv.getText());
 //                intent.putExtra("getoff",detail_getoff_tv.getText());
+//                intent.putExtra("mStartPoint",mStartPoint);
+//                intent.putExtra("mEndPoint",mEndPoint);
 //                intent.putExtra("time",start_time.getText());
 //                intent.putExtra("number",person_num.getText());
 //                intent.putExtra("money",money.getText());
-//                startActivity(intent);
-//                break;
+                startActivity(intent);
             case R.id.detail_geton_tv:
                 finish();
                 break;
@@ -216,34 +262,61 @@ public class DetailActivity extends AppCompatActivity implements
             case R.id.num_1:
                 nums_color_set(num_1);
                 num_certain.setText("1人乘车");
+                order.setPassNum(1);
                 break;
             case R.id.num_2:
                 nums_color_set(num_2);
                 num_certain.setText("2人乘车");
+                order.setPassNum(2);
                 break;
             case R.id.num_3:
                 nums_color_set(num_3);
                 num_certain.setText("3人乘车");
+                order.setPassNum(3);
                 break;
             case R.id.num_4:
                 nums_color_set(num_4);
                 num_certain.setText("4人乘车");
+                order.setPassNum(4);
                 break;
             case R.id.num_certain:
                 Fog.setVisibility(View.INVISIBLE);
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 person_num.setText(num_certain.getText()+" >");
                 break;
-
             case R.id.fab_route:
-                Intent intent = new Intent(DetailActivity.this, RouteActivity.class);
-                intent.putExtra("mStartPoint",mStartPoint);
-                intent.putExtra("mEndPoint",mEndPoint);
-                startActivity(intent);
+                Intent intent2 = new Intent(DetailActivity.this, RouteActivity.class);
+                intent2.putExtra("mStartPoint",mStartPoint);
+                intent2.putExtra("mEndPoint",mEndPoint);
+                intent2.putExtra("drivePath",drivePath);
+//                intent2.putExtra("mDriveRouteResult",mDriveRouteResult);
+                startActivity(intent2);
+                break;
+            case R.id.fab_find:
+
                 break;
         }
     }
+    //*************************************************************************
+    public void findOrders(){
+        Log.i(TAG_2,order.toString());
+        getPresenter().findOrder(DetailActivity.this,finding_order_tv,finding_order_pb,recyc,order);
+    }
+    //*************************************************************************
+    public void ReinitlOrder(){
+        order.setStartLoc(startAddr);
+        order.setEndLoc(endAddr);
+//        order.setStartLonLat(mStartPoint.toString());
+        order.setStartLonLat(JSON.toJSONString(mStartPoint));
+//        order.setEndLonLat(mEndPoint.toString());d
+        order.setEndLonLat(JSON.toJSONString(mEndPoint));
+//                order.setListstep(drivePath.getSteps());
+//        List<DriveStep> list = drivePath.getSteps();
+        String steps = JSON.toJSONString(drivePath);
+        order.setListSteps(steps);
+    }
 
+    //*************************************************************************
     public void nums_color_set(TextView tv){
         GradientDrawable mdraw;
         TextView[] tvs = {num_1,num_2,num_3,num_4};
@@ -266,29 +339,30 @@ public class DetailActivity extends AppCompatActivity implements
 
     @Override
     public void onDriveRouteSearched(DriveRouteResult result, int errorCode ) {
-        Log.i("DetailActivity","onDriveRouteSearched");
+//        Log.i("DetailActivity","onDriveRouteSearched");
         if(errorCode== AMapException.CODE_AMAP_SUCCESS){
-            Log.i("DetailActivity",errorCode+"");
+//            Log.i("DetailActivity",errorCode+"");
             if(result != null&&result.getPaths() !=null){
-                Log.i("DetailActivity","result"+result+" result.getPaths()"+result.getPaths());
+//                Log.i("DetailActivity","result"+result+" result.getPaths()"+result.getPaths());
                 if( result.getPaths().size()>0 ){
-                    Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size());
+//                    Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size());
                     mDriveRouteResult = result;
-                    final DrivePath drivePath = mDriveRouteResult.getPaths().get(0);
-                    Log.i("DetailActivity","drivePath "+drivePath);
+                    drivePath = mDriveRouteResult.getPaths().get(0);
+//                    Log.i("DetailActivity","drivePath "+drivePath);
                     if(drivePath == null) {
                         return;
                     }
                     int taxiCost = (int)mDriveRouteResult.getTaxiCost();
-                    Log.i("DetailActivity","taxiCost "+taxiCost);
+//                    Log.i("DetailActivity","taxiCost "+taxiCost);
                     money.setText(taxiCost+"");
-                    Log.i("money",money+"");
+                    order.setMoney(taxiCost);
+//                    Log.i("money",money+"");
                 }else if (result != null && result.getPaths() == null) {
                     Toast.makeText(DetailActivity.this,"无数据",Toast.LENGTH_SHORT).show();
-                    Log.i("DetailActivity","result.getPaths() 小于0，无数据");
+//                    Log.i("DetailActivity","result.getPaths() 小于0，无数据");
 
                 }
-                Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size()+"");
+//                Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size()+"");
             }else {
                 Toast.makeText(DetailActivity.this,"没有搜到数据",Toast.LENGTH_SHORT).show();
                 Log.i("DetailActivity","result result.getPaths 空null无数据");
@@ -349,13 +423,18 @@ public class DetailActivity extends AppCompatActivity implements
     }
 
     public void initRecyclerView(){
-        recycAdapter = new ordersRecycAdapter(DetailActivity.this, recycData);
-        recyc.setAdapter(recycAdapter);
-        recyc.setLayoutManager(new LinearLayoutManager(
-                DetailActivity.this,
-                LinearLayoutManager.VERTICAL, //垂直方向
-                false             //非倒序
-                ));
+//        recycAdapter = new ordersRecycAdapter(DetailActivity.this, recycData);
+//        recyc.setAdapter(recycAdapter);
+//        recyc.setLayoutManager(new LinearLayoutManager(
+//                DetailActivity.this,
+//                LinearLayoutManager.VERTICAL, //垂直方向
+//                false             //非倒序
+//                ));
+
+    }
+    //*************************************************************************
+    @Override
+    public void func(String ss) {
 
     }
 
