@@ -2,7 +2,6 @@ package com.example.carpoolgl;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,14 +12,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +39,11 @@ public class SearchActivity extends AppCompatActivity implements
         View.OnClickListener,
         chooseLocView,
         TextWatcher,
-        Inputtips.InputtipsListener
+        Inputtips.InputtipsListener,
+        View.OnFocusChangeListener
 
 {
-
+    private static final String TAG="SearchActivity";
     private View bottomSheet;
     private BottomSheetBehavior mBoSheetBehavior;
     private EditText getOn_Edit;
@@ -69,10 +65,8 @@ public class SearchActivity extends AppCompatActivity implements
 
     //search
     private String city = "苏州";
-    private double[] startLatLon= new double[2];
-    private double[] endLatLon= new double[2];
-    private LatLonPoint mStartPoint;
-    private LatLonPoint mEndPoint;
+    private LatLonPoint mStartPoint = new LatLonPoint(39.995576,116.481288);
+    private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +76,8 @@ public class SearchActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         editSelect = intent.getBooleanExtra("Edit_select",false);
         nowlocation = intent.getStringExtra("nowLocation");
-        startLatLon = intent.getDoubleArrayExtra("nowLatLong");
+        mStartPoint = intent.getParcelableExtra("nowLatLon");
+        Log.i(TAG,mStartPoint.toString());
         //startAddress保存从MainActivity传来的地址数据，用于传给DetailActivity
         startAddress = nowlocation;
         getOn_Edit.setText(nowlocation);
@@ -215,10 +210,12 @@ public class SearchActivity extends AppCompatActivity implements
     public void initFvb(){
         mapView = findViewById(R.id.map);
         getOn_Edit = findViewById(R.id.getOn_edit);
-        getOn_Edit.setOnClickListener(this);
+//        getOn_Edit.setOnClickListener(this);
+        getOn_Edit.setOnFocusChangeListener(this);
         getOn_Edit.addTextChangedListener(this);
         getOff_Edit = findViewById(R.id.getOff_edit);
-        getOff_Edit.setOnClickListener(this);
+//        getOff_Edit.setOnClickListener(this);
+        getOff_Edit.setOnFocusChangeListener(this);
         getOff_Edit.addTextChangedListener(this);
         ensure_Loc_bt = findViewById(R.id.ensure_loc_bt);
         ensure_Loc_bt.setOnClickListener(this);
@@ -232,18 +229,42 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View v) {
+    public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()){
             case R.id.getOn_edit:
-                mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                getOn_Edit.setText("");
-                editSelect = false;
+                if(hasFocus){
+                    Log.i(TAG,"get_on取到焦点 ");
+                    mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    getOn_Edit.setText("");
+                    editSelect = false;
+                }
+
                 break;
             case R.id.getOff_edit:
-                mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                getOff_Edit.setText("");
-                editSelect = true;
+                if(hasFocus){
+                    Log.i(TAG,"get_on取到焦点 ");
+                    mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    getOff_Edit.setText("");
+                    editSelect = true;
+                }
                 break;
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+//            case R.id.getOn_edit:
+//                mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                getOn_Edit.setText("");
+//                editSelect = false;
+//                break;
+//            case R.id.getOff_edit:
+//                mBoSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                getOff_Edit.setText("");
+//                editSelect = true;
+//                break;
             case R.id.drawer_loc:
                 mBoSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 chooseLocP.initChooseLocPresenter(getApplicationContext(),getScreenWH());
@@ -313,14 +334,12 @@ public class SearchActivity extends AppCompatActivity implements
 
     @Override
     public void setLatLon(double lon, double lat) {
-//        startLatLon[0]=lon;
-//        startLatLon[1]=lat;
         if(editSelect){
-            endLatLon[0]=lon;
-            endLatLon[1]=lat;
+            mEndPoint.setLongitude(lon);
+            mEndPoint.setLatitude(lat);
         }else {
-            startLatLon[0]=lon;
-            startLatLon[1]=lat;
+            mStartPoint.setLongitude(lon);
+            mStartPoint.setLatitude(lat);
         }
     }
 
@@ -337,9 +356,10 @@ public class SearchActivity extends AppCompatActivity implements
         Intent intent = new Intent(SearchActivity.this,DetailActivity.class);
         intent.putExtra("startAddress",startAddress);
         intent.putExtra("endAddress",endAddress);
-        intent.putExtra("startLatLon",startLatLon);
-        intent.putExtra("endLatLon",endLatLon);
+        intent.putExtra("startLatLon",mStartPoint);
+        intent.putExtra("endLatLon",mEndPoint);
         startActivity(intent);
     }
+
 
 }
