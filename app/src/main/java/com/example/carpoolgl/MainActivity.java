@@ -14,9 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,10 +27,8 @@ import com.example.carpoolgl.main.mainPresenter;
 import com.example.carpoolgl.main.mainView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
-import com.example.carpoolgl.routeTest.routeTestActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import org.xutils.view.annotation.ViewInject;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, nowLocView, mainView {
     private static final String TAG="MainActivity";
