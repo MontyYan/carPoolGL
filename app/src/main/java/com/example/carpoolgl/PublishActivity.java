@@ -1,27 +1,26 @@
 package com.example.carpoolgl;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amap.api.services.core.LatLonPoint;
-import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.base.baseActivity;
-import com.example.carpoolgl.base.baseView;
 import com.example.carpoolgl.bean.RelOrder;
+import com.example.carpoolgl.publish.pubHandler;
 import com.example.carpoolgl.publish.publishPresenter;
 import com.example.carpoolgl.publish.publishView;
-import com.lidroid.xutils.ViewUtils;
-
-import org.xutils.view.annotation.ViewInject;
 
 public class PublishActivity extends baseActivity<publishView, publishPresenter> implements publishView{
+
+    private static final String TAG="PublishActivity";
 
     private TextView geton;
     private TextView getoff;
@@ -34,8 +33,8 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
     private LinearLayout publishing_lin;
     private RelOrder order;
 
-    private LatLonPoint mStartPoint;
-    private LatLonPoint mEndPoint;
+    private LatLonPoint mStartPoint = new LatLonPoint(39.995576,116.481288);
+    private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,7 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
         setContentView(R.layout.activity_publish);
         init();
         initOrdersDetail();
+        publish();
     }
 
     @Override
@@ -69,29 +69,35 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
 
     public void initOrdersDetail(){
         Intent intent = getIntent();
-        String startLoc = intent.getStringExtra("geton");
-        geton.setText(startLoc);
-        String endLoc = intent.getStringExtra("getoff");
-        getoff.setText(endLoc);
-        mStartPoint = intent.getParcelableExtra("mStartPoint");
-        mEndPoint = intent.getParcelableExtra("mEndPoint");
-        String startTime = intent.getStringExtra("time").replaceAll(" >","");
-        time.setText(startTime);
-        String num = intent.getStringExtra("number").charAt(0)+"";
-        number.setText("人数："+num);
-        String mon = intent.getStringExtra("money");
-        money.setText("价格："+mon+"元");
-
+        Bundle bundle = intent.getBundleExtra("data");
+        order = bundle.getParcelable("relorder");
+        Log.i(TAG,order.toString());
+        //先设置UI数据，但是此时不显示
+        geton.setText(order.getStartLoc());
+        getoff.setText(order.getEndLoc());
+        time.setText(order.getStartTime().substring(5));
+        number.setText("人数："+order.getPassNum());
+        money.setText("价格："+order.getMoney()+"元");
+        Log.i(TAG,order.toString());
+        //测试，用于输出超长Log***************
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                pubHandler pubHandler = new pubHandler();
+                Message msg = pubHandler.obtainMessage();
+                msg.what = 9;
+                msg.obj = order;
+                pubHandler.sendMessage(msg);
+                Looper.loop();
+            }
+        }).start();
+        //*********************************
     }
 
-    public void initRelOrder(String startLoc,String endLoc,String startTime,String num, String mon){
-        order.setRePaSeq(STATIC_USERINFO.getUserSeq());
-
-    }
 
     public void publish(){
-
-        getPresenter().publishing(order,publishing_lin,publishing_card);
+        getPresenter().publishing(order,publishing_tv,publishing_pb,publishing_card);
     }
 
     /*
