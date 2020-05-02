@@ -9,6 +9,9 @@ public abstract class baseActivity<V extends baseView, P extends basePresenter<V
     private P presenter;
     private V view;
 
+    public abstract P createPresenter();
+    public abstract V createView();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,9 +26,6 @@ public abstract class baseActivity<V extends baseView, P extends basePresenter<V
             this.presenter.attachView(this.view);
         }
     }
-
-    public abstract P createPresenter();
-    public abstract V createView();
 
     public P getPresenter() {
         return presenter;
