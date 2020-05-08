@@ -32,7 +32,7 @@ public class passengerModel {
      *   如果已经发布订单，则将订单信息显示在主页，且不允许再次发布订单，直到订单完成
      * */
     public void findOrder(Context context,passengerView passV){
-        SharedPreferences shapre = context.getSharedPreferences("orderinfo",Context.MODE_PRIVATE);
+        SharedPreferences shapre = context.getSharedPreferences("pa_orderinfo",Context.MODE_PRIVATE);
         Integer result = shapre.getInt("orderConCode",0);
         if(result.equals(1)){
             String orderJson = shapre.getString("orderJson","").replaceAll("&quot;","");

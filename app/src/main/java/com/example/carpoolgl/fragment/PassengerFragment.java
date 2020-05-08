@@ -1,28 +1,20 @@
 package com.example.carpoolgl.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.amap.api.services.core.LatLonPoint;
-import com.example.carpoolgl.OrderInfoActivity;
-import com.example.carpoolgl.PhoneActivity;
+import com.example.carpoolgl.Pa_OrderInfoActivity;
 import com.example.carpoolgl.R;
 import com.example.carpoolgl.SearchActivity;
 import com.example.carpoolgl.Static.STATIC_USERINFO;
@@ -34,11 +26,10 @@ import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
 import com.google.android.material.navigation.NavigationView;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class PassengerFragment extends baseFragment<passengerView, passengerPresenter> implements View.OnClickListener, nowLocView, passengerView{
 
     private static final String TAG="MainActivity";
+    private static final int PASSENID=1;
 
     private TextView getOnTv;
     private TextView getOffTv;
@@ -59,13 +50,14 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 //    private Button searchRoute;
 
     //当前发布订单控件
-    private CardView main_published_order_cv;
-    private TextView main_start_loc_tv;
-    private TextView main_end_loc_tv;
-    private TextView main_date_tv;
-    private TextView main_num_tv;
-    private Button main_orderDetail_bt;
-    private TextView main_money_tv;
+    private CardView pa_published_order_cv;
+    private TextView pa_start_loc_tv;
+    private TextView pa_end_loc_tv;
+    private TextView pa_date_tv;
+    private TextView pa_num_tv;
+    private Button pa_orderDetail_bt;
+    private TextView pa_money_tv;
+    private TextView nowloc_passen_tv;
 
     @Nullable
     @Override
@@ -96,18 +88,23 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
     public void initController(View view){
         getOnTv = view.findViewById(R.id.getOn_TV);
-        getOnTv.setOnClickListener(this);
         getOffTv = view.findViewById(R.id.getOff_TV);
-        getOffTv.setOnClickListener(this);
-        main_published_order_cv = view.findViewById(R.id.main_published_order_cv);
-        main_start_loc_tv=view.findViewById(R.id.main_start_loc_tv);
-        main_end_loc_tv = view.findViewById(R.id.main_end_loc_tv);
-        main_date_tv = view.findViewById(R.id.main_date_tv);
-        main_num_tv = view.findViewById(R.id.main_num_tv);
-        main_orderDetail_bt = view.findViewById(R.id.main_orderDetail_bt);
-        main_orderDetail_bt.setOnClickListener(this);
-        main_money_tv = view.findViewById(R.id.main_money_tv);
+        pa_published_order_cv = view.findViewById(R.id.pa_published_order_cv);
+        pa_start_loc_tv=view.findViewById(R.id.pa_start_loc_tv);
+        pa_end_loc_tv = view.findViewById(R.id.pa_end_loc_tv);
+        pa_date_tv = view.findViewById(R.id.pa_date_tv);
+        pa_num_tv = view.findViewById(R.id.pa_num_tv);
+        pa_orderDetail_bt = view.findViewById(R.id.pa_orderDetail_bt);
+        pa_money_tv = view.findViewById(R.id.pa_money_tv);
+        nowloc_passen_tv = view.findViewById(R.id.nowAddress_passen_tv);
 
+        setOnClick();
+    }
+
+    public void setOnClick(){
+        getOnTv.setOnClickListener(this);
+        getOffTv.setOnClickListener(this);
+        pa_orderDetail_bt.setOnClickListener(this);
     }
 
     @Override
@@ -134,6 +131,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
                     intent.putExtra("Edit_select",flag);
                     intent.putExtra("nowLocation",nowLocation);
                     intent.putExtra("nowLatLon",nowLatLon);
+                    intent.putExtra("identity",PASSENID);
                     startActivity(intent);
                 }else {
                     Toast.makeText(getActivity(),"请先登录账号",Toast.LENGTH_SHORT).show();
@@ -141,8 +139,8 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
                 break;
 
-            case R.id.main_orderDetail_bt:
-                intent = new Intent(getActivity(), OrderInfoActivity.class);
+            case R.id.pa_orderDetail_bt:
+                intent = new Intent(getActivity(), Pa_OrderInfoActivity.class);
                 startActivity(intent);
                 break;
 
@@ -151,22 +149,9 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
     //实现初始化已发布订单信息与已登录用户信息
     public void init_Info_order(){
-        getPresenter().findLocUInfo(getActivity());
+        getPresenter().findPa_OrderInfo(getActivity());
     }
 
-
-
-    //退出登录后，没有登录，本地用户登录数据覆盖
-    public void deShareData(){
-        STATIC_USERINFO.setCon(0);
-        SharedPreferences.Editor shaEdit = getActivity().getSharedPreferences("userinfo",MODE_PRIVATE).edit();
-        shaEdit.putInt("conCode",0);
-        shaEdit.putString("phone","未登录");
-        shaEdit.putString("registerDate","");
-        shaEdit.putString("sequence","");
-        shaEdit.apply();
-
-    }
 
     //设置全局静态
     @Override
@@ -177,12 +162,12 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
     @Override
     public void SetOrder(RelOrder order) {
-        main_published_order_cv.setVisibility(View.VISIBLE);
-        main_start_loc_tv.setText(order.getStartLoc());
-        main_end_loc_tv.setText(order.getEndLoc());
-        main_date_tv.setText(order.getStartTime().substring(5));
-        main_num_tv.setText(order.getPassNum()+"");
-        main_money_tv.setText(order.getMoney()+"");
+        pa_published_order_cv.setVisibility(View.VISIBLE);
+        pa_start_loc_tv.setText(order.getStartLoc());
+        pa_end_loc_tv.setText(order.getEndLoc());
+        pa_date_tv.setText(order.getStartTime().substring(5));
+        pa_num_tv.setText(order.getPassNum()+"");
+        pa_money_tv.setText(order.getMoney()+"");
     }
 
     //toast当前中文地址
@@ -190,6 +175,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
     public void setGetonText(String addr) {
         nowLocation = addr;
         getOnTv.setText(addr);
+        nowloc_passen_tv.setText(addr);
 //        Toast.makeText(this,addr,Toast.LENGTH_LONG).show();
     }
 
