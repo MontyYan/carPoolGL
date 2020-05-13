@@ -20,23 +20,35 @@ import com.example.carpoolgl.R;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.mLonLat;
 import com.example.carpoolgl.route.RouteActivity;
+import com.example.carpoolgl.util.RouteUtil;
 
 import java.util.List;
+import java.util.Set;
+
+/*
+* 显示其他用户已经发布的订单信息。
+* 司机与乘客使用同一个查看adapter
+* */
 
 public class ordersRecycAdapter extends RecyclerView.Adapter<ordersRecycAdapter.myHolder> {
 
+    private static final int PA_IDENTITY = 5;
+    private static final int DR_IDENTITY = 6;
     private Context context;
 //    private List<orderBean> datas;
     private List<RelOrder> datas;
-
-//    public ordersRecycAdapter(DetailActivity context, List<orderBean> datas){
-//        this.context = context;
-//        this.datas = datas;
-//    }
+    private RelOrder order;
+    private Integer IDENTITY =0;
 
     public ordersRecycAdapter(Context context, List<RelOrder> datas){
         this.context = context;
         this.datas = datas;
+    }
+
+    public ordersRecycAdapter(Context context, List<RelOrder> datas,Integer id){
+        this.context = context;
+        this.datas = datas;
+        this.IDENTITY = id;
     }
 
     class myHolder extends RecyclerView.ViewHolder{
@@ -53,10 +65,45 @@ public class ordersRecycAdapter extends RecyclerView.Adapter<ordersRecycAdapter.
             endLoc = itemView.findViewById(R.id.tv_end_loc);
             date = itemView.findViewById(R.id.tv_date);
             num = itemView.findViewById(R.id.tv_num);
-            route = itemView.findViewById(R.id.bt_route);
-            join = itemView.findViewById(R.id.bt_join);
+            route = itemView.findViewById(R.id.route_bt);
+            join = itemView.findViewById(R.id.join_bt);
+
+            route.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(orderClickLisener!=null){
+                        order = datas.get(getLayoutPosition());
+                        orderClickLisener.OnRouteClick(order);  //回调‘查看路线’方法
+                    }
+                }
+            });
+
+            join.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(orderClickLisener!=null){
+                        order = datas.get(getLayoutPosition());
+                        orderClickLisener.OnJoinClick(order);   //回调'加入'方法
+                    }
+                }
+            });
 
         }
+    }
+
+    private OrderClickLisener orderClickLisener;
+    public interface OrderClickLisener{
+        /**
+         * 当recyclerview某个被点击的时候回调
+         * @param order  点击视图中button
+         *
+         */
+        void OnRouteClick(RelOrder order);
+        void OnJoinClick(RelOrder order);
+    }
+    //设置recyclerview某条的监听
+    public void setOnItemClickListener(ordersRecycAdapter.OrderClickLisener orderClickLisener) {
+        this.orderClickLisener = orderClickLisener;
     }
 
     @NonNull
@@ -64,54 +111,24 @@ public class ordersRecycAdapter extends RecyclerView.Adapter<ordersRecycAdapter.
     public ordersRecycAdapter.myHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemview = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_orders_recyc,parent,false);
-//        View itemview = View.inflate(context,R.layout.item_orders_recyc,null);
         myHolder holder = new myHolder(itemview);
         return holder;
     }
 
-@Override
-public void onBindViewHolder(@NonNull ordersRecycAdapter.myHolder holder, int position) {
-    final RelOrder order = datas.get(position);
-//    Log.i("adapter",order.toString());
-    Log.i("adapter",order.getStartLonLat());
-    Log.i("adapter",order.getEndLonLat());
-    holder.startLoc.setText(order.getStartLoc());
-    holder.endLoc.setText(order.getEndLoc());
-    holder.date.setText(order.getStartTime().substring(5));
-    holder.num.setText(order.getPassNum()+"");
-    holder.route.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-//            Toast.makeText(context,"点击", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, RouteActivity.class);
-            mLonLat start = JSONObject.parseObject(order.getStartLonLat(), mLonLat.class);
-            LatLonPoint mstartlatlon = new LatLonPoint(start.getLatitude(),start.getLongitude());
-            intent.putExtra("mStartPoint",mstartlatlon);
-            mLonLat end = JSONObject.parseObject(order.getEndLonLat(),mLonLat.class);
-            LatLonPoint mendlatlon = new LatLonPoint(end.getLatitude(),end.getLongitude());
-            intent.putExtra("mEndPoint",mendlatlon);
-            intent.putExtra("drivePath",getPath(order.getListSteps()));
-            context.startActivity(intent);
-//            intent.putExtra("mDriveRouteResult","");
-            Log.i("adapter","点击");
+    @Override
+    public void onBindViewHolder(@NonNull ordersRecycAdapter.myHolder holder, int position) {
+        order = datas.get(position);
+        Log.i("adapter",order.getStartLonLat());
+        Log.i("adapter",order.getEndLonLat());
+        holder.startLoc.setText(order.getStartLoc());
+        holder.endLoc.setText(order.getEndLoc());
+        holder.date.setText(order.getStartTime().substring(5));
+        holder.num.setText(order.getPassNum()+"");
+        if(IDENTITY.equals(PA_IDENTITY)){
+            holder.join.setText("加入");
+        }else if(IDENTITY.equals(DR_IDENTITY)){
+            holder.join.setText("接单");
         }
-    });
-}
-    public DrivePath getPath(String json){
-        DrivePath path=new DrivePath();
-//        List<DriveStep> steps = new ArrayList<>();
-//        DriveStep step = new DriveStep();
-        try{
-//            steps = JSONObject.parseArray(json,DriveStep.class);
-            path= JSONObject.parseObject(json,DrivePath.class);
-//            path.setSteps(steps);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        Log.i("findOrder_recyc",path.toString());
-        Log.i("findOrder_recyc",path.getStrategy());
-//        DrivePath path = JSON.parse(json,DrivePath.class);
-        return path;
     }
 
     @Override

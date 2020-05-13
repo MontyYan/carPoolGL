@@ -80,8 +80,6 @@ public class SearchRecycAdapter extends RecyclerView.Adapter<SearchRecycAdapter.
          * @param data1  点击得到数据
          */
         void OnItemclick(View view,String data1,double lat,double lon);
-
-
     }
     //设置recyclerview某条的监听
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
