@@ -2,20 +2,23 @@ package com.example.carpoolgl.main;
 
 import android.content.Context;
 
-import com.example.carpoolgl.base.basePresenter;
+import com.example.carpoolgl.base.activity.basePresenter;
 
 public class mainPresenter extends basePresenter<mainView> {
 
     private mainModel model;
-    private Context context;
+//    private Context context;
 
-    public mainPresenter(Context context){
+    public mainPresenter(){
         this.model = new mainModel();
-        this.context = context;
+//        this.context = context;
     }
 
-    public void findLocUInfo(){
-        this.model.findUInfo(context,getView());
+    public void findLocUInfo(Context context){
+        mainView view = getView();
+        this.model.findUInfo(context,view);
+//        this.model.findOrder(context,view);
     }
+
 
 }
