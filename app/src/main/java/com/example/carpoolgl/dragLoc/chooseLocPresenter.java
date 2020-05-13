@@ -199,11 +199,13 @@ public class chooseLocPresenter implements
         if(rCode==1000){
             if(Result!=null&&Result.getRegeocodeAddress()!=null
                     && Result.getRegeocodeAddress().getFormatAddress()!=null){
-                String[] ad = Result.getRegeocodeAddress().getFormatAddress().split("道");
+//                String[] ad = Result.getRegeocodeAddress().getFormatAddress().split("道");
+                String ad = Result.getRegeocodeAddress().getFormatAddress();
 //                address = Result.getRegeocodeAddress().getDistrict()+" "+
 //                        Result.getRegeocodeAddress().getTownship()+" "+
 //                        ad[1];
-                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad[1];
+//                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad[1];
+                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad;
                 Log.e("逆编码回调的地址0",address);
                 Log.e("逆编码回调的地址1",Result.getRegeocodeAddress().getFormatAddress());//江苏省苏州市姑苏区双塔街道杨枝二村苏大家属区18幢杨枝二村苏大家属区
                 Log.e("逆编码回调的地址2",Result.getRegeocodeAddress().getBuilding());//
