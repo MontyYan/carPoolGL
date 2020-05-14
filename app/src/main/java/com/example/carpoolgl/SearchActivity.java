@@ -44,6 +44,8 @@ public class SearchActivity extends AppCompatActivity implements
 
 {
     private static final String TAG="SearchActivity";
+    private static final int PASSENID=1;
+    private static final int DRIVERID=2;
     private View bottomSheet;
     private BottomSheetBehavior mBoSheetBehavior;
     private EditText getOn_Edit;
@@ -58,13 +60,14 @@ public class SearchActivity extends AppCompatActivity implements
     private String nowlocation;
     private String startAddress;
     private String endAddress;
+    private int identity;
 
     private RecyclerView recyc;
     private ArrayList<String> datas;//初步数据集合，后续替代掉
     private SearchRecycAdapter recycAdapter;
 
     //search
-    private String city = "苏州";
+    private String city = "桂林";
     private LatLonPoint mStartPoint = new LatLonPoint(39.995576,116.481288);
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);
 
@@ -77,6 +80,7 @@ public class SearchActivity extends AppCompatActivity implements
         editSelect = intent.getBooleanExtra("Edit_select",false);
         nowlocation = intent.getStringExtra("nowLocation");
         mStartPoint = intent.getParcelableExtra("nowLatLon");
+        identity = intent.getIntExtra("identity",1);
         Log.i(TAG,mStartPoint.toString());
         //startAddress保存从MainActivity传来的地址数据，用于传给DetailActivity
         startAddress = nowlocation;
@@ -144,11 +148,11 @@ public class SearchActivity extends AppCompatActivity implements
                         map.put("address", address);
                         map.put("lat",mpoint.getLatitude()+"");
                         map.put("lon",mpoint.getLongitude()+"");
-                        Log.i("getName",tipList.get(i).getName());//杨枝二村苏大家属区31幢
-                        Log.i("getAddress",tipList.get(i).getAddress());//葑门西街东150米
-                        Log.i("toString",tipList.get(i).toString());//杨枝二村苏大家属区23幢 district:江苏省苏州市姑苏区 adcode:320508
-                        Log.i("getDistrict",tipList.get(i).getDistrict());//江苏省苏州市姑苏区
-                        Log.i("latlon",mpoint.getLatitude()+" "+mpoint.getLongitude());//
+                        Log.i(TAG+"Name",tipList.get(i).getName());//杨枝二村苏大家属区31幢
+                        Log.i(TAG+"Address",tipList.get(i).getAddress());//葑门西街东150米
+                        Log.i(TAG+"toString",tipList.get(i).toString());//杨枝二村苏大家属区23幢 district:江苏省苏州市姑苏区 adcode:320508
+                        Log.i(TAG+"District",tipList.get(i).getDistrict());//江苏省苏州市姑苏区
+                        Log.i(TAG+"latlon",mpoint.getLatitude()+" "+mpoint.getLongitude());//
                         listString.add(map);
 //                        Log.i("map_name_add",tipList.get(i).getName()+" "+tipList.get(i).getDistrict());
                     }
@@ -353,7 +357,19 @@ public class SearchActivity extends AppCompatActivity implements
     }
     //进入DetailAactivity
     public void startDetailActi(){
-        Intent intent = new Intent(SearchActivity.this,DetailActivity.class);
+        Intent intent;
+        switch (identity){
+            case DRIVERID:
+                intent = new Intent(SearchActivity.this, Dr_OrderDetailActivity.class);
+                break;
+
+            case PASSENID:
+                intent = new Intent(SearchActivity.this, Pa_OrderDetailActivity.class);
+                break;
+            default:
+                ToastUtil.show(this,"身份出错");
+                return;
+        }
         intent.putExtra("startAddress",startAddress);
         intent.putExtra("endAddress",endAddress);
         intent.putExtra("startLatLon",mStartPoint);
