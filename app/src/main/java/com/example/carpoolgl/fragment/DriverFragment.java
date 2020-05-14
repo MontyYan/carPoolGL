@@ -13,7 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.DrivePath;
+import com.example.carpoolgl.DrSearchOrderActivity;
 import com.example.carpoolgl.Dr_OrderInfoActivity;
 import com.example.carpoolgl.Pa_OrderInfoActivity;
 import com.example.carpoolgl.R;
@@ -24,6 +27,7 @@ import com.example.carpoolgl.fragment.driver.driverPresenter;
 import com.example.carpoolgl.fragment.driver.driverView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
+import com.example.carpoolgl.util.RouteUtil;
 import com.example.carpoolgl.util.ToastUtil;
 
 public class DriverFragment extends baseFragment<driverView, driverPresenter> implements driverView, nowLocView,View.OnClickListener {
@@ -44,7 +48,19 @@ public class DriverFragment extends baseFragment<driverView, driverPresenter> im
     private TextView dr_date_tv;
     private TextView dr_num_tv;
     private Button dr_orderDetail_bt;
+    private TextView dr_order_id_tv;
     private TextView dr_money_tv;
+
+    private String  orderSeq;
+    private String passenSeq;
+    private String  startAddr;
+    private String  endAddr;
+    private String  startTime;
+    private Integer  passenNum;
+    private Integer  money;
+    private DrivePath drivePath;
+    private LatLonPoint mStartPoint = new LatLonPoint(39.942295,116.335891);//起点，39.942295,116.335891
+    private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);//终点，39.995576,116.481288
 
     @Nullable
     @Override
@@ -65,12 +81,14 @@ public class DriverFragment extends baseFragment<driverView, driverPresenter> im
     @Override
     public void onClick(View v) {
         Intent intent;
+        Context context = getActivity();
         switch (v.getId()){
             case R.id.searchExist_cv:
-                ToastUtil.show(getContext(),"点击查看订单");
+                intent = new Intent(context, DrSearchOrderActivity.class);
+                startActivity(intent);
+
                 break;
             case R.id.driverPublish_cv:
-                Context context = getActivity();
                 intent = new Intent(context, SearchActivity.class);
                 intent.putExtra("Edit_select",true);    //true 设置编辑框为‘getoff’
                 intent.putExtra("nowLocation",nowLocation);   //传递当前地址
@@ -80,6 +98,16 @@ public class DriverFragment extends baseFragment<driverView, driverPresenter> im
                 break;
             case R.id.dr_orderDetail_bt:
                 intent = new Intent(getActivity(), Dr_OrderInfoActivity.class);
+                intent.putExtra("startAddress",startAddr);
+                intent.putExtra("endAddress",endAddr);
+                intent.putExtra("orderSeq",orderSeq);
+                intent.putExtra("passenSeq",passenSeq);
+                intent.putExtra("startTime",startTime);
+                intent.putExtra("passenNum",passenNum);
+                intent.putExtra("money",money);
+                intent.putExtra("drivePath",drivePath);
+                intent.putExtra("mStartPoint",mStartPoint);
+                intent.putExtra("mEndPoint",mEndPoint);
                 startActivity(intent);
                 break;
 
@@ -104,9 +132,8 @@ public class DriverFragment extends baseFragment<driverView, driverPresenter> im
         dr_start_loc_tv = view.findViewById(R.id.dr_start_loc_tv);
         dr_end_loc_tv = view.findViewById(R.id.dr_end_loc_tv);
         dr_date_tv = view.findViewById(R.id.dr_date_tv);
-        dr_num_tv = view.findViewById(R.id.dr_num_tv);
         dr_orderDetail_bt = view.findViewById(R.id.dr_orderDetail_bt);
-        dr_money_tv = view.findViewById(R.id.dr_money_tv);
+        dr_order_id_tv = view.findViewById(R.id.dr_order_id_tv);
 
         setOnClick();
     }
@@ -164,11 +191,22 @@ public class DriverFragment extends baseFragment<driverView, driverPresenter> im
 
     @Override
     public void SetOrder(RelOrder order) {
+        orderSeq = order.getReOrSeq();
+        startAddr = order.getStartLoc();
+        endAddr = order.getEndLoc();
+        startTime = order.getStartTime();
+        passenNum = order.getPassNum();
+        money = order.getMoney();
+        passenSeq = order.getRelPassSeq();
+        drivePath = RouteUtil.getDrivePath(order.getListSteps());
+        mStartPoint = RouteUtil.getLatLon(order.getStartLonLat());
+        mEndPoint = RouteUtil.getLatLon(order.getEndLonLat());
+
+        dr_order_id_tv.setText(orderSeq);
         dr_published_order_cv.setVisibility(View.VISIBLE);
-        dr_start_loc_tv.setText(order.getStartLoc());
-        dr_end_loc_tv.setText(order.getEndLoc());
-        dr_date_tv.setText(order.getStartTime().substring(5));
-        dr_num_tv.setText(order.getPassNum()+"");
-        dr_money_tv.setText(order.getMoney()+"");
+        dr_start_loc_tv.setText(startAddr);
+        dr_end_loc_tv.setText(endAddr);
+        dr_date_tv.setText(startTime.substring(5));
     }
+
 }
