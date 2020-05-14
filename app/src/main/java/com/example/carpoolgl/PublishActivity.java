@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amap.api.services.core.LatLonPoint;
-import com.example.carpoolgl.base.baseActivity;
+import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.publish.pubHandler;
 import com.example.carpoolgl.publish.publishPresenter;
@@ -32,6 +32,7 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
     private ProgressBar publishing_pb;
     private LinearLayout publishing_lin;
     private RelOrder order;
+    private Integer IDENTITY;
 
     private LatLonPoint mStartPoint = new LatLonPoint(39.995576,116.481288);
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);
@@ -41,7 +42,7 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish);
         init();
-        initOrdersDetail();
+        getOrdersDetail();
         publish();
     }
 
@@ -67,10 +68,12 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
         publishing_lin = findViewById(R.id.publishing_lin);
     }
 
-    public void initOrdersDetail(){
+    //获取intent数据后，更新order信息，
+    public void getOrdersDetail(){
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("data");
         order = bundle.getParcelable("relorder");
+        IDENTITY = intent.getIntExtra("identity",-1);
         Log.i(TAG,order.toString());
         //先设置UI数据，但是此时不显示
         geton.setText(order.getStartLoc());
@@ -95,13 +98,12 @@ public class PublishActivity extends baseActivity<publishView, publishPresenter>
         //*********************************
     }
 
-
     public void publish(){
-        getPresenter().publishing(order,publishing_tv,publishing_pb,publishing_card);
+        getPresenter().publishing(PublishActivity.this,order,publishing_tv,publishing_pb,publishing_card,IDENTITY);
     }
 
     /*
-    * 取消progress，显示发布订单order
+    *
     * */
     @Override
     public void showOrders() {
