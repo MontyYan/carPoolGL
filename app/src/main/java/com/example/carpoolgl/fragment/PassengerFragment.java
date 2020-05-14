@@ -13,7 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.DrivePath;
 import com.example.carpoolgl.Pa_OrderInfoActivity;
 import com.example.carpoolgl.R;
 import com.example.carpoolgl.SearchActivity;
@@ -24,6 +27,7 @@ import com.example.carpoolgl.fragment.passenger.passengerPresenter;
 import com.example.carpoolgl.fragment.passenger.passengerView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
+import com.example.carpoolgl.util.RouteUtil;
 import com.google.android.material.navigation.NavigationView;
 
 public class PassengerFragment extends baseFragment<passengerView, passengerPresenter> implements View.OnClickListener, nowLocView, passengerView{
@@ -57,7 +61,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
     private TextView pa_num_tv;
     private Button pa_orderDetail_bt;
     private TextView pa_money_tv;
-    private TextView nowloc_passen_tv;
+    private RelOrder order;
 
     @Nullable
     @Override
@@ -93,10 +97,9 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
         pa_start_loc_tv=view.findViewById(R.id.pa_start_loc_tv);
         pa_end_loc_tv = view.findViewById(R.id.pa_end_loc_tv);
         pa_date_tv = view.findViewById(R.id.pa_date_tv);
-        pa_num_tv = view.findViewById(R.id.pa_num_tv);
+//        pa_num_tv = view.findViewById(R.id.pa_num_tv);
         pa_orderDetail_bt = view.findViewById(R.id.pa_orderDetail_bt);
         pa_money_tv = view.findViewById(R.id.pa_money_tv);
-        nowloc_passen_tv = view.findViewById(R.id.nowAddress_passen_tv);
 
         setOnClick();
     }
@@ -141,6 +144,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
             case R.id.pa_orderDetail_bt:
                 intent = new Intent(getActivity(), Pa_OrderInfoActivity.class);
+                intent.putExtra("order",this.order);
                 startActivity(intent);
                 break;
 
@@ -162,12 +166,13 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
 
     @Override
     public void SetOrder(RelOrder order) {
+        this.order = order;
         pa_published_order_cv.setVisibility(View.VISIBLE);
         pa_start_loc_tv.setText(order.getStartLoc());
         pa_end_loc_tv.setText(order.getEndLoc());
-        pa_date_tv.setText(order.getStartTime().substring(5));
-        pa_num_tv.setText(order.getPassNum()+"");
-        pa_money_tv.setText(order.getMoney()+"");
+        pa_date_tv.setText("出发时间："+order.getStartTime().substring(5));
+
+//        pa_money_tv.setText(order.getMoney()+""); //主页面显示订单不应该有具体花费数额 ，随着加入人数增多，数额需要变化，而主页面不提供实时更新
     }
 
     //toast当前中文地址
@@ -175,8 +180,6 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
     public void setGetonText(String addr) {
         nowLocation = addr;
         getOnTv.setText(addr);
-        nowloc_passen_tv.setText(addr);
-//        Toast.makeText(this,addr,Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -184,6 +187,8 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
         nowLatLon.setLongitude(lon);
         nowLatLon.setLatitude(lat);
     }
+
+
 
     //销毁
     @Override
