@@ -13,10 +13,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.carpoolgl.LoginActivity;
 import com.example.carpoolgl.MainActivity;
 import com.example.carpoolgl.Static.STATIC_CLASS;
+import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.dataBase.MydbHelper;
 
@@ -26,6 +28,7 @@ public class mHandler extends Handler {
     private static final int UPDATA_TV = 0;
     private static final int UPDATA_SP = 1;
     private static final int STATRT_ACT = 5;
+
 //    private static final int LOGIN_PROGRESS = 2;
 
     private TextView LoginResult_tv;
@@ -64,7 +67,7 @@ public class mHandler extends Handler {
     @Override
     public void handleMessage(Message msg){
         switch (msg.what){
-            case UPDATA_TV:
+            case UPDATA_TV:         //更新UI，登录过程界面UI变化
                 String text = (String)msg.obj;
                 LoginResult_tv.setText("登录: "+text);
                 JSONObject jsonObject = JSONObject.parseObject(text);
@@ -76,7 +79,7 @@ public class mHandler extends Handler {
                     Login_progress.setVisibility(View.GONE);
                 }
                 break;
-            case UPDATA_SP:
+            case UPDATA_SP:         //更新SharedPreferences
                 User user = (User)msg.obj;
                 saveInfo(user);
 //                insert(user);
@@ -90,6 +93,7 @@ public class mHandler extends Handler {
 //            case LOGIN_PROGRESS:
 //
 //                break;
+
         }
     }
 
@@ -98,6 +102,7 @@ public class mHandler extends Handler {
         SharedPreferences.Editor shaEdit = context.getSharedPreferences("userinfo",Context.MODE_PRIVATE).edit();
         shaEdit.putInt("conCode",1);
         shaEdit.putString("phone",user.getPhone());
+        shaEdit.putString("name",user.getName());
         shaEdit.putString("registerDate",user.getRegisterDate()+"");
         shaEdit.putString("sequence",user.getUserSeq());
         shaEdit.apply();
