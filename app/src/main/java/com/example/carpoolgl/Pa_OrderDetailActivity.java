@@ -1,11 +1,16 @@
 package com.example.carpoolgl;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,13 +32,17 @@ import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.carpoolgl.Static.STATIC_USERINFO;
-import com.example.carpoolgl.base.baseActivity;
+import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.RelOrder;
+import com.example.carpoolgl.bean.RelPassMems;
 import com.example.carpoolgl.bean.orderBean;
-import com.example.carpoolgl.findOrders.fordersPresenter;
-import com.example.carpoolgl.findOrders.fordersView;
+import com.example.carpoolgl.findOrders.passenger.findHandler;
+import com.example.carpoolgl.findOrders.passenger.fordersPresenter;
+import com.example.carpoolgl.findOrders.passenger.fordersView;
 import com.example.carpoolgl.recyclerView.ordersRecycAdapter;
 import com.example.carpoolgl.route.RouteActivity;
+import com.example.carpoolgl.util.RouteUtil;
+import com.example.carpoolgl.util.ToastUtil;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -45,11 +54,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DetailActivity extends baseActivity<fordersView, fordersPresenter> implements
+public class Pa_OrderDetailActivity extends baseActivity<fordersView, fordersPresenter> implements
         View.OnClickListener, RouteSearch.OnRouteSearchListener, fordersView {
 
     private static final String TAG="DetailActivity";
     private static final String TAG_2="findOrder_AC";
+    private static final int IDENTITY = 5;
     private View bottom_Detail;
     private BottomSheetBehavior mBoSheetBehavior;
     private TextView detail_geton_tv;
@@ -62,6 +72,8 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
     private FloatingActionButton fab_route;
     private FloatingActionButton fab_find;
     private FloatingActionMenu menu;
+
+    private fordersPresenter presenter;
 
     private TextView num_1;
     private TextView num_2;
@@ -91,8 +103,6 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
     //初始化订单bean
     private RelOrder order = new RelOrder(STATIC_USERINFO.getUserSeq());
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +117,7 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
         //时间选择器
         timePicker();
         initRecycData();
-        initRecyclerView();
+//        initRecyclerView();
     }
 
     @Override
@@ -128,8 +138,8 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
         detail_getoff_tv.setText(endAddr);
         mStartPoint = intent.getParcelableExtra("startLatLon");
         Log.i("DetailActivity",mStartPoint.toString());
-        Log.i("DetailActivity",mEndPoint.toString());
         mEndPoint = intent.getParcelableExtra("endLatLon");
+        Log.i("DetailActivity",mEndPoint.toString());
     }
     //*************************************************************************
     //对order进行部分数据进行默认初始化（默认当前时间，默认乘客人数为1）
@@ -146,19 +156,11 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm");
                 String da= sdf.format(date);
-//                Date date_=null;
-//                try{
-//                    date_ = sdf.parse(da);
-//                    Log.i(TAG,">>>>>"+date_.toString());
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
 
-//                tvTime.setText(getTime(date));
                 start_time.setText(da.substring(5)+" >");   //截去年份，剩下字段显示在ui
                 order.setStartTime(da);
 
-                Toast.makeText(DetailActivity.this,order.getStartTime(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(Pa_OrderDetailActivity.this,order.getStartTime(),Toast.LENGTH_SHORT).show();
             }
         }).setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
             @Override
@@ -234,11 +236,12 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
                 Fog.setVisibility(View.VISIBLE);
                 break;
             case R.id.publish_bt:
-                Intent intent = new Intent(DetailActivity.this,PublishActivity.class);
+                Intent intent = new Intent(Pa_OrderDetailActivity.this,PublishActivity.class);
                 ReinitlOrder(); //对订单order的剩余数据进行赋值
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("relorder",order);
                 intent.putExtra("data",bundle);
+                intent.putExtra("identity",IDENTITY);
 //                Log.i(TAG,order.toString());
 //                intent.putExtra("geton",detail_geton_tv.getText());
 //                intent.putExtra("getoff",detail_getoff_tv.getText());
@@ -285,7 +288,7 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
                 person_num.setText(num_certain.getText()+" >");
                 break;
             case R.id.fab_route:
-                Intent intent2 = new Intent(DetailActivity.this, RouteActivity.class);
+                Intent intent2 = new Intent(Pa_OrderDetailActivity.this, RouteActivity.class);
                 intent2.putExtra("mStartPoint",mStartPoint);
                 intent2.putExtra("mEndPoint",mEndPoint);
                 intent2.putExtra("drivePath",drivePath);
@@ -300,7 +303,9 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
     //*************************************************************************
     public void findOrders(){
         Log.i(TAG_2,order.toString());
-        getPresenter().findOrder(DetailActivity.this,finding_order_tv,finding_order_pb,recyc,order);
+//        getPresenter().findOrder(Pa_OrderDetailActivity.this,finding_order_tv,finding_order_pb,recyc,order);
+        presenter = getPresenter();
+        presenter.findOrder(Pa_OrderDetailActivity.this,order);
     }
     //*************************************************************************
     public void ReinitlOrder(){
@@ -339,38 +344,38 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
 
     @Override
     public void onDriveRouteSearched(DriveRouteResult result, int errorCode ) {
-//        Log.i("DetailActivity","onDriveRouteSearched");
-        if(errorCode== AMapException.CODE_AMAP_SUCCESS){
-//            Log.i("DetailActivity",errorCode+"");
+        Log.i("DetailActivity","onDriveRouteSearched");
+        if(errorCode == AMapException.CODE_AMAP_SUCCESS){
+            Log.i("DetailActivity",errorCode+"");
             if(result != null&&result.getPaths() !=null){
-//                Log.i("DetailActivity","result"+result+" result.getPaths()"+result.getPaths());
+                Log.i("DetailActivity","result"+result+" result.getPaths()"+result.getPaths());
                 if( result.getPaths().size()>0 ){
-//                    Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size());
+                    Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size());
                     mDriveRouteResult = result;
                     drivePath = mDriveRouteResult.getPaths().get(0);
-//                    Log.i("DetailActivity","drivePath "+drivePath);
+                    Log.i("DetailActivity","drivePath "+drivePath);
                     if(drivePath == null) {
                         return;
                     }
                     int taxiCost = (int)mDriveRouteResult.getTaxiCost();
-//                    Log.i("DetailActivity","taxiCost "+taxiCost);
+                    Log.i("DetailActivity","taxiCost "+taxiCost);
                     money.setText(taxiCost+"");
                     order.setMoney(taxiCost);
 //                    Log.i("money",money+"");
                 }else if (result != null && result.getPaths() == null) {
-                    Toast.makeText(DetailActivity.this,"无数据",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Pa_OrderDetailActivity.this,"无数据",Toast.LENGTH_SHORT).show();
 //                    Log.i("DetailActivity","result.getPaths() 小于0，无数据");
 
                 }
 //                Log.i("DetailActivity","result.getPaths().size()"+result.getPaths().size()+"");
             }else {
-                Toast.makeText(DetailActivity.this,"没有搜到数据",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Pa_OrderDetailActivity.this,"没有搜到数据",Toast.LENGTH_SHORT).show();
                 Log.i("DetailActivity","result result.getPaths 空null无数据");
             }
             Log.i("DetailActivity","result"+result+" result.getPaths()"+result.getPaths());
         }else {
-            Toast.makeText(DetailActivity.this,errorCode,Toast.LENGTH_SHORT).show();
             Log.i("DetailActivity","errorCode 空null");
+            Toast.makeText(Pa_OrderDetailActivity.this,errorCode,Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -390,12 +395,12 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
      */
     public void searchRouteResult(int routeType, int mode) {
         if (mStartPoint == null) {
-            Toast.makeText(DetailActivity.this,"稍后再试",Toast.LENGTH_SHORT).show();
+            Toast.makeText(Pa_OrderDetailActivity.this,"稍后再试",Toast.LENGTH_SHORT).show();
 //            ToastUtil.show(mContext, "定位中，稍后再试...");
             return;
         }
         if (mEndPoint == null) {
-            Toast.makeText(DetailActivity.this,"终点未设置",Toast.LENGTH_SHORT).show();
+            Toast.makeText(Pa_OrderDetailActivity.this,"终点未设置",Toast.LENGTH_SHORT).show();
 //            ToastUtil.show(mContext, "终点未设置");
         }
 //        showProgressDialog();
@@ -430,13 +435,76 @@ public class DetailActivity extends baseActivity<fordersView, fordersPresenter> 
 //                LinearLayoutManager.VERTICAL, //垂直方向
 //                false             //非倒序
 //                ));
-
     }
-    //*************************************************************************
+    //**V层***********************************************************************
     @Override
-    public void func(String ss) {
+    public void setRecyclerView(final Integer result, final List<RelOrder> orders){
+        if(result.equals(0)){
+            ToastUtil.show(this,"查找失败");
+            finding_order_tv.setText("查找失败");
+//            finding_order_tv.setVisibility(View.GONE);
+            finding_order_pb.setVisibility(View.GONE);
+        }else{
+            finding_order_tv.setVisibility(View.GONE);
+            finding_order_pb.setVisibility(View.GONE);
+            ordersRecycAdapter adapter = new ordersRecycAdapter(Pa_OrderDetailActivity.this,orders,IDENTITY);
+            recyc.setAdapter(adapter);
+            recyc.setLayoutManager(new LinearLayoutManager(
+                    Pa_OrderDetailActivity.this,
+                    LinearLayoutManager.VERTICAL, //垂直方向
+                    false             //非倒序
+            ));
+            recyc.setVisibility(View.VISIBLE);
+            adapter.setOnItemClickListener(new ordersRecycAdapter.OrderClickLisener() {
+                @Override
+                public void OnRouteClick(RelOrder order) {
+                    Intent intent = new Intent(Pa_OrderDetailActivity.this, RouteActivity.class);
+                    LatLonPoint mstartlatlon = RouteUtil.getLatLon(order.getStartLonLat());
+                    LatLonPoint mendlatlon = RouteUtil.getLatLon(order.getEndLonLat());
+                    DrivePath drivePath = RouteUtil.getDrivePath(order.getListSteps());
 
+                    intent.putExtra("mStartPoint",mstartlatlon);
+                    intent.putExtra("mEndPoint",mendlatlon);
+                    intent.putExtra("drivePath",drivePath);
+                    startActivity(intent);
+                }
+                @Override
+                public void OnJoinClick(RelOrder order) {
+                    quitDialog();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setJoinResult(String result){
+        ToastUtil.show(this,result);
     }
 
     //*************************************************************************
+    //主页面点击退出登录时的弹出窗口，用于再次确认
+    public void quitDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(Pa_OrderDetailActivity.this);
+        dialog.setTitle("确认加入");
+        dialog.setCancelable(false);
+        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //初始化加入成员信息
+                RelPassMems mems = new RelPassMems(order.getReOrSeq(),
+                        STATIC_USERINFO.getUserSeq(),
+                        STATIC_USERINFO.getName(),
+                        STATIC_USERINFO.getPhone(),
+                        0
+                );
+                presenter.JoinOrder(Pa_OrderDetailActivity.this, mems);
+            }
+        });
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialog.show();
+    }
 }
