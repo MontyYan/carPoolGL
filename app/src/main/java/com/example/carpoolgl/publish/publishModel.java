@@ -1,5 +1,6 @@
 package com.example.carpoolgl.publish;
 
+import android.content.Context;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -27,13 +28,13 @@ public class publishModel {
     private static final String TAG="publishModel";
 
 //    public static final String publishUrl="http://192.168.0.107:8080/publish";
-//    public static final String publishUrl= STATIC_CLASS.getUrl()+"/publish";
-    public static final String publishUrl="http://192.168.31.203:8080/publish";
+    public static final String publishUrl= STATIC_CLASS.getUrl()+"/publish";
+//    public static final String publishUrl="http://192.168.31.203:8080/publish";
 
-    public void publish(final RelOrder order, TextView text, ProgressBar progress, CardView card, final publishView publishV){
+    public void publish(Context context, final RelOrder order, TextView text, ProgressBar progress, CardView card, final publishView publishV,int id){
         //List<DriveStep> steplists = order.getListStep();    //取出坐标信息
 
-        final pubHandler handler = new pubHandler(text,progress,card);   //使用handler对发布页面ui进行更新
+        final pubHandler handler = new pubHandler(context,text,progress,card,id);   //使用handler对发布页面ui进行更新
         //
         new Thread(new Runnable() {
             @Override
