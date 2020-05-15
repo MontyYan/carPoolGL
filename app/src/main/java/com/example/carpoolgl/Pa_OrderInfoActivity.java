@@ -113,9 +113,10 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()){
             case R.id.pa_publish_route_bt:
-                Intent intent = new Intent(this, RouteActivity.class);
+                intent = new Intent(this, RouteActivity.class);
                 intent.putExtra("drivePath", RouteUtil.getDrivePath(order.getListSteps()));
                 intent.putExtra("mStartPoint",RouteUtil.getLatLon(order.getStartLonLat()));
                 intent.putExtra("mEndPoint",RouteUtil.getLatLon(order.getEndLonLat()));
@@ -123,6 +124,12 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
                 break;
 
+            case R.id.msgLogin_tv:
+                intent = new Intent(this,msgLoginActivity.class);
+
+
+                startActivity(intent);
+                break;
         }
     }
 
@@ -137,9 +144,11 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             driver_phone_tv.setText(dcInfo.getDriverPhone());
             sus_driverCarInfo_cv.setVisibility(View.VISIBLE);
             //DriverCarInfo缺少condition字段。。。。。。。。。。。。。。。。。。fuck
-            if(order.getCondition().equals(2)){
-                pa_order_con_tv.setText("已被接单");
-            }
+            //能获取到司机信息证明已经接单
+            pa_order_con_tv.setText("已被接单");
+//            if(order.getCondition().equals(2)){
+//                pa_order_con_tv.setText("已被接单");
+//            }
         }
         ToastUtil.show(this,result);
     }
