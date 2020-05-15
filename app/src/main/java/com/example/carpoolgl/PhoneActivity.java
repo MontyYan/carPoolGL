@@ -36,7 +36,7 @@ public class PhoneActivity extends AppCompatActivity implements View.OnClickList
 //                IsPhoneNum(phone_et.getText().toString());
                 Intent intent = new Intent(PhoneActivity.this,LoginActivity.class);
                 if(IsPhoneNum(phone_et.getText().toString())){
-                    intent.putExtra("phone",phone_et.getText().toString());
+                    intent.putExtra("phoneNum",phone_et.getText().toString());
                     Log.i("PhoneAactivity",phone_et.getText().toString());
                     startActivity(intent);
                 }
