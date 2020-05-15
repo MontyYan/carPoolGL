@@ -1,14 +1,12 @@
 package com.example.carpoolgl;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.util.LogPrinter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -16,10 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.carpoolgl.Static.STATIC_USERINFO;
-import com.example.carpoolgl.base.baseActivity;
+import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.bean.User_;
-import com.example.carpoolgl.dataBase.MydbHelper;
 import com.example.carpoolgl.login.loginPresenter;
 import com.example.carpoolgl.login.loginView;
 import com.example.carpoolgl.login.mHandler;
@@ -30,8 +27,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 
@@ -64,7 +59,7 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Intent intent = getIntent();
-        phoneNum = intent.getStringExtra("phone");
+        phoneNum = intent.getStringExtra("phoneNum");
         init();
     }
 
@@ -110,12 +105,12 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
                 break;
             case R.id.register_tv:
                 intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                intent.putExtra("phone",phoneNum);
+                intent.putExtra("phoneNum",phoneNum);
                 startActivity(intent);
                 break;
             case R.id.msgLogin_tv:
                 intent = new Intent(LoginActivity.this,msgLoginActivity.class);
-                intent.putExtra("phone",phoneNum);
+                intent.putExtra("phoneNum",phoneNum);
                 startActivity(intent);
                 break;
         }
