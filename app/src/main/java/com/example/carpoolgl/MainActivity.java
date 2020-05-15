@@ -2,7 +2,7 @@ package com.example.carpoolgl;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -14,15 +14,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.carpoolgl.Static.STATIC_USERINFO;
+import com.example.carpoolgl.base.activity.baseActivity;
+import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.dataBase.MydbHelper;
+import com.example.carpoolgl.fragment.DriverFragment;
+import com.example.carpoolgl.fragment.PassengerFragment;
 import com.example.carpoolgl.main.mainPresenter;
 import com.example.carpoolgl.main.mainView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
@@ -30,7 +36,7 @@ import com.example.carpoolgl.nowLoc.nowLocView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, nowLocView, mainView {
+public class MainActivity extends baseActivity<mainView,mainPresenter> implements View.OnClickListener, nowLocView, mainView {
     private static final String TAG="MainActivity";
 
     private TextView getOnTv;
@@ -54,31 +60,81 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //路线测试
 //    private Button searchRoute;
 
+    //当前发布订单控件
+    private CardView main_published_order_cv;
+    private TextView main_start_loc_tv;
+    private TextView main_end_loc_tv;
+    private TextView main_date_tv;
+    private TextView main_num_tv;
+    private Button main_orderDetail_bt;
+    private TextView main_money_tv;
+
+    //身份切换
+    private RadioButton driver_rb;
+    private RadioButton passenger_rb;
+    private PassengerFragment pfrag;
+    private DriverFragment dfrag;
+
+
+
+    @Override
+    public mainPresenter createPresenter() {
+        return new mainPresenter();
+    }
+
+    @Override
+    public mainView createView() {
+        return this;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pfrag = new PassengerFragment();
+        dfrag = new DriverFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_container,pfrag).commitAllowingStateLoss();
         InitDrawer();
         initController();
         //创建数据库button test
 //        cre_db_Test = findViewById(R.id.cre_db);
 //        cre_db_Test.setOnClickListener(this);
         findLocInfo_();
-        mainPresenter mp = new mainPresenter(MainActivity.this);
-        mp.attachView(this);
-        mp.findLocUInfo();
-        mp.detachView();
-        nowLocP = new nowLocPresenter(getApplicationContext());
-        nowLocP.attachView(this);
+        init_Info_order();
+//        mainPresenter mp = new mainPresenter(MainActivity.this);
+//        mp.attachView(this);
+//        mp.findLocUInfo();
+//        mp.detachView();
+//        nowLocP = new nowLocPresenter(getApplicationContext());
+//        nowLocP.attachView(this);
+    }
+
+    //实现初始化已发布订单信息与已登录用户信息
+    public void init_Info_order(){
+        getPresenter().findLocUInfo(MainActivity.this);
+
     }
 
     public void initController(){
-        getOnTv = findViewById(R.id.getOn_TV);
-        getOnTv.setOnClickListener(this);
-        getOffTv = findViewById(R.id.getOff_TV);
-        getOffTv.setOnClickListener(this);
-//        searchRoute = findViewById(R.id.searchRoute);
-//        searchRoute.setOnClickListener(this);
+//        getOnTv = findViewById(R.id.getOn_TV);
+//        getOnTv.setOnClickListener(this);
+//        getOffTv = findViewById(R.id.getOff_TV);
+//        getOffTv.setOnClickListener(this);
+////        searchRoute = findViewById(R.id.searchRoute);
+////        searchRoute.setOnClickListener(this);
+//        main_published_order_cv = findViewById(R.id.main_published_order_cv);
+//        main_start_loc_tv=findViewById(R.id.main_start_loc_tv);
+//        main_end_loc_tv = findViewById(R.id.main_end_loc_tv);
+//        main_date_tv = findViewById(R.id.main_date_tv);
+//        main_num_tv = findViewById(R.id.main_num_tv);
+//        main_orderDetail_bt = findViewById(R.id.main_orderDetail_bt);
+//        main_orderDetail_bt.setOnClickListener(this);
+//        main_money_tv = findViewById(R.id.main_money_tv);
+        driver_rb = findViewById(R.id.driver_rb);
+        driver_rb.setOnClickListener(this);
+        passenger_rb = findViewById(R.id.passenger_rb);
+        passenger_rb.setOnClickListener(this);
+
     }
 
     @Override
@@ -86,49 +142,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean flag = false;   //false代表getonTv编辑，true代表getoffTv编辑
         Intent intent;
         switch (v.getId()){
-            case R.id.getOn_TV:
-                if(!STATIC_USERINFO.getCon().equals(0)){
-                    flag = false;
-                    intent = new Intent(MainActivity.this,SearchActivity.class);
-                    intent.putExtra("Edit_select",flag);
-                    intent.putExtra("nowLocation",nowLocation);
-                    intent.putExtra("nowLatLon",nowLatLon);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this,"请先登录账号",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.getOff_TV:
-                if(!STATIC_USERINFO.getCon().equals(0)){
-                    flag = true;
-                    intent = new Intent(MainActivity.this,SearchActivity.class);
-                    intent.putExtra("Edit_select",flag);
-                    intent.putExtra("nowLocation",nowLocation);
-                    intent.putExtra("nowLatLon",nowLatLon);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this,"请先登录账号",Toast.LENGTH_SHORT).show();
-                }
 
-                break;
             case R.id.PersonalInfo:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-
+//
             case R.id.quit:
 //                intent = new Intent(MainActivity.this, PhoneActivity.class);
 //                startActivity(intent);
                 quitDialog();
                 break;
-
-//            case R.id.cre_db:
-////                mydbHelper.getWritableDatabase();
-//                insert();
-//                break;
-//            case R.id.searchRoute:
-//                intent = new Intent(MainActivity.this, routeTestActivity.class);
-//                startActivity(intent);
-//                break;
+            case R.id.driver_rb:
+//                ToastUtil.show(this,"切换到司机");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,dfrag).commitAllowingStateLoss();
+                break;
+            case R.id.passenger_rb:
+//                ToastUtil.show(this,"切换到乘客");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,pfrag).commitAllowingStateLoss();
+                break;
         }
     }
 
@@ -151,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
             }
         });
         dialog.show();
@@ -165,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         shaEdit.putString("registerDate","");
         shaEdit.putString("sequence","");
         shaEdit.apply();
-
     }
 
     //测试用，后删
@@ -251,6 +280,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         regDate_Navheader_tv.setText("注册日期："+STATIC_USERINFO.getRegisterDate());
     }
 
+    @Override
+    public void SetOrder(RelOrder order) {
+        main_published_order_cv.setVisibility(View.VISIBLE);
+        main_start_loc_tv.setText(order.getStartLoc());
+        main_end_loc_tv.setText(order.getEndLoc());
+        main_date_tv.setText(order.getStartTime().substring(5));
+        main_num_tv.setText(order.getPassNum()+"");
+        main_money_tv.setText(order.getMoney()+"");
+    }
+
     //toast当前中文地址
     @Override
     public void setGetonText(String addr) {
@@ -270,8 +309,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        nowLocP.destory();
-        nowLocP.detachView();
+//        nowLocP.destory();
+//        nowLocP.detachView();
     }
 
     @Override
