@@ -1,19 +1,27 @@
 package com.example.carpoolgl;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
 import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.DriverCarInfo;
+import com.example.carpoolgl.bean.PayOrder;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderPresenter;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderView;
@@ -22,6 +30,11 @@ import com.example.carpoolgl.util.RouteUtil;
 import com.example.carpoolgl.util.ToastUtil;
 
 public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOrderPresenter> implements View.OnClickListener ,passenOrderView{
+
+    private CardView cost_card;
+    private TextView pa_cost_tv;
+
+    private passenOrderPresenter presenter;
 
     private TextView pa_order_con_tv;//订单状态
     private TextView pa_order_seq_tv;//订单编号
@@ -45,6 +58,15 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     private RelOrder order;
     private LatLonPoint mStartPoint = new LatLonPoint(39.942295,116.335891);//起点，39.942295,116.335891
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);//终点，39.995576,116.481288
+
+    private ProgressBar pay_dialog_pb ;
+    private TextView  pay_dialog_money_tv ;
+    private PinEntryEditText pay_dialog_et;
+    private Button pay_dialog_bt;
+    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
+
+    private LinearLayout pay_dialog_ly;
 
     @Override
     public passenOrderPresenter createPresenter() {
@@ -75,6 +97,8 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
         pa_order_seq_tv.setText(order.getReOrSeq());
         if(order.getCondition().equals(0)){
             pa_order_con_tv.setText("等待司机接单");
+        }else if(order.getCondition().equals(1)){
+            pa_order_con_tv.setText("已被接单");
         }
 //        pa_publish_num_tv.setText("人数："+order.getPassNum());
 
@@ -82,6 +106,10 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     }
 
     public void initController(){
+
+        cost_card = findViewById(R.id.cost_card);
+        pa_cost_tv = findViewById(R.id.pa_cost_tv);
+
         pa_order_con_tv = findViewById(R.id.pa_order_con_tv);
         pa_order_seq_tv = findViewById(R.id.pa_order_seq_tv);
         pa_publish_geton_tv = findViewById(R.id.pa_publish_geton_tv);
@@ -100,15 +128,18 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
         car_num_tv = findViewById(R.id.car_num_tv);
         driver_phone_tv = findViewById(R.id.driver_phone_tv);
         phone_call_iv = findViewById(R.id.phone_call_iv);
+
     }
 
     public void setOnClick(){
         pa_publish_route_bt.setOnClickListener(this);
+        pa_cost_tv.setOnClickListener(this);
     }
 
     //获取服务端订单状态
     public void getNewOrder(){
-        getPresenter().getNewOrder(this,order.getReOrSeq());
+        presenter = getPresenter();
+        presenter.getNewOrder(this,order.getReOrSeq());
     }
 
     @Override
@@ -126,9 +157,11 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
             case R.id.msgLogin_tv:
                 intent = new Intent(this,msgLoginActivity.class);
-
-
                 startActivity(intent);
+                break;
+
+            case R.id.pa_cost_tv:
+                setDialog();
                 break;
         }
     }
@@ -143,13 +176,76 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             car_num_tv.setText(dcInfo.getCarNum());
             driver_phone_tv.setText(dcInfo.getDriverPhone());
             sus_driverCarInfo_cv.setVisibility(View.VISIBLE);
-            //DriverCarInfo缺少condition字段。。。。。。。。。。。。。。。。。。fuck
-            //能获取到司机信息证明已经接单
-            pa_order_con_tv.setText("已被接单");
-//            if(order.getCondition().equals(2)){
-//                pa_order_con_tv.setText("已被接单");
-//            }
+//            pa_order_con_tv.setText("已被接单");
+            if(dcInfo.getOrderCon().equals(1)){
+                pa_order_con_tv.setText("已被接单");
+                SharedPreferences.Editor shEdit = getSharedPreferences("pa_orderinfo", Context.MODE_PRIVATE).edit();
+                shEdit.putInt("condition",1);
+            }
+            if(dcInfo.getOrderCon().equals(2)){   //订单已经完成，乘客界面添加支付控件
+                cost_card.setVisibility(View.VISIBLE);
+            }
         }
         ToastUtil.show(this,result);
     }
+
+    @Override
+    public void setPayDialog(Integer result, String payOrder) {
+        if(result.equals(1)){
+            showDialog(payOrder);
+        }
+    }
+
+    @Override
+    public void PayingDialog(Integer result,String payResult) {
+        if(result.equals(1)){
+            ToastUtil.show(this,payResult);
+            dialog.dismiss();
+        }else {
+            ToastUtil.show(this,"支付失败");
+            dialog.dismiss();
+        }
+    }
+
+
+    public void setDialog(){
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("支付订单 ");
+        dialog = builder.create();
+        View view = LayoutInflater.from(this).inflate(R.layout.pay_dialog,null);
+        pay_dialog_pb = view.findViewById(R.id.pay_dialog_pb);
+        pay_dialog_money_tv = view.findViewById(R.id.pay_dialog_money_tv);
+        pay_dialog_et = view.findViewById(R.id.pay_dialog_et);
+        pay_dialog_bt = view.findViewById(R.id.pay_dialog_bt);
+        pay_dialog_ly = view.findViewById(R.id.pay_dialog_ly);
+        pay_dialog_ly.setVisibility(View.GONE);
+        pay_dialog_pb.setVisibility(View.VISIBLE);
+        builder.setView(view);
+        builder.show();
+
+        presenter.payRequest(this,order.getReOrSeq());
+
+    }
+
+    public void showDialog(String seq){
+        builder.setTitle("支付订单："+seq);
+        pay_dialog_ly.setVisibility(View.VISIBLE);
+        pay_dialog_pb.setVisibility(View.GONE);
+        pay_dialog_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.show(Pa_OrderInfoActivity.this,"支付");
+                PayOrder payOrder = new PayOrder(order.getReOrSeq(),
+                        order.getRePaSeq(),
+                        order.getDrSeq(),
+                        order.getMoney(),
+                        pay_dialog_et.getText().toString());
+                presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
+            }
+        });
+    }
+
+
+
+
 }
