@@ -19,10 +19,12 @@ import android.widget.TextView;
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
+import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.DriverCarInfo;
 import com.example.carpoolgl.bean.PayOrder;
 import com.example.carpoolgl.bean.RelOrder;
+import com.example.carpoolgl.bean.payRequestInfo;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderPresenter;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderView;
 import com.example.carpoolgl.route.RouteActivity;
@@ -63,10 +65,14 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     private TextView  pay_dialog_money_tv ;
     private PinEntryEditText pay_dialog_et;
     private Button pay_dialog_bt;
+    private Button pay_cancel_bt;
     private AlertDialog.Builder builder;
     private AlertDialog dialog;
 
     private LinearLayout pay_dialog_ly;
+
+    private DriverCarInfo driverCarInfo;
+
 
     @Override
     public passenOrderPresenter createPresenter() {
@@ -139,7 +145,7 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     //获取服务端订单状态
     public void getNewOrder(){
         presenter = getPresenter();
-        presenter.getNewOrder(this,order.getReOrSeq());
+        presenter.getNewOrder(this,order.getReOrSeq(), STATIC_USERINFO.getUserSeq());
     }
 
     @Override
@@ -168,8 +174,9 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
     @Override
     public void setPaOrderInfo(DriverCarInfo dcInfo,String result,Integer con) {
-        if(con.equals(2)){
-            pa_money_tv.setText(dcInfo.getSingleMoney()+"");
+        if(con.equals(1)){
+            driverCarInfo = dcInfo;
+            pa_money_tv.setText(dcInfo.getSingleMoney()+dcInfo.getAppreMoney()+"");
             pa_nowPassen_tv.setText(dcInfo.getPassenNum()+"人 /共"+dcInfo.getSeatNum()+"座");
             pa_driverName_tv.setText("司机"+dcInfo.getDriverName());
             car_describe_tv.setText(dcInfo.getCarColor()+" "+dcInfo.getCarBrand());
@@ -191,8 +198,13 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
     @Override
     public void setPayDialog(Integer result, String payOrder) {
+        /*
+        * reuslt为1，则表明支付请求通过，可以显示支付页面
+        * */
         if(result.equals(1)){
             showDialog(payOrder);
+            //TODO 保存支付订单信息在sharepreference中，
+            // 用于支付订单已经完成，但没有支付，退出应用，再打开应用时候还原支付订单信息，
         }
     }
 
@@ -206,46 +218,85 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             dialog.dismiss();
         }
     }
-
-
+    /*
+    * 显示支付窗口
+    * 窗口先显示pb 等待支付请求结果
+    * */
     public void setDialog(){
         builder = new AlertDialog.Builder(this);
-        builder.setTitle("支付订单 ");
         dialog = builder.create();
+        dialog.setTitle("支付订单 ");
+//        builder.setTitle("支付订单 ");
         View view = LayoutInflater.from(this).inflate(R.layout.pay_dialog,null);
         pay_dialog_pb = view.findViewById(R.id.pay_dialog_pb);
         pay_dialog_money_tv = view.findViewById(R.id.pay_dialog_money_tv);
         pay_dialog_et = view.findViewById(R.id.pay_dialog_et);
         pay_dialog_bt = view.findViewById(R.id.pay_dialog_bt);
+        pay_cancel_bt = view.findViewById(R.id.pay_cancel_bt);
         pay_dialog_ly = view.findViewById(R.id.pay_dialog_ly);
         pay_dialog_ly.setVisibility(View.GONE);
         pay_dialog_pb.setVisibility(View.VISIBLE);
-        builder.setView(view);
-        builder.show();
+        dialog.setView(view);
 
-        presenter.payRequest(this,order.getReOrSeq());
-
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        //开始支付请求
+        presenter.payRequest(this,getPayReInfo());
     }
 
-    public void showDialog(String seq){
-        builder.setTitle("支付订单："+seq);
-        pay_dialog_ly.setVisibility(View.VISIBLE);
-        pay_dialog_pb.setVisibility(View.GONE);
+    /*
+    * 初始化支付订单申请信息
+    * */
+    public payRequestInfo getPayReInfo(){
+
+        return new payRequestInfo(driverCarInfo.getPassenSeq(),driverCarInfo.getDriverSeq(),driverCarInfo.getAppreMoney()+driverCarInfo.getSingleMoney());
+    }
+
+    /*
+    * 支付请求通过，dialog界面由pb转换为密码输入框
+    * */
+    public void showDialog(final String seq){
+//        builder.setTitle("支付订单："+seq);
+        dialog.setTitle("支付订单："+seq);
+        pay_dialog_ly.setVisibility(View.VISIBLE);      //显示linearLayout
+        pay_dialog_pb.setVisibility(View.GONE);         //隐藏pb
+
+        /*
+        * 确定
+        * 输入密码后，点击执行支付流程
+        * */
         pay_dialog_bt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {        //设置支付点击事件
+                //TODO 判断密码是否输入
+                /* function()  */
+
                 ToastUtil.show(Pa_OrderInfoActivity.this,"支付");
-                PayOrder payOrder = new PayOrder(order.getReOrSeq(),
-                        order.getRePaSeq(),
-                        order.getDrSeq(),
-                        order.getMoney(),
+                PayOrder payOrder = new PayOrder(seq,
+                        driverCarInfo.getPassenSeq(),
+                        driverCarInfo.getDriverSeq(),
+                        driverCarInfo.getAppreMoney()+driverCarInfo.getSingleMoney(),
                         pay_dialog_et.getText().toString());
-                presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
+                /*
+                * 进行支付请求
+                *
+                * 先注释，测试前面支付请求显示
+                * */
+//                presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
+                ToastUtil.show(Pa_OrderInfoActivity.this,"进行支付");
+            }
+        });
+
+        /*
+        * 取消
+        * 取消支付流程
+        * */
+        pay_cancel_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.dismiss();
             }
         });
     }
-
-
-
-
 }
