@@ -7,7 +7,10 @@ import androidx.cardview.widget.CardView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.amap.api.services.core.LatLonPoint;
@@ -28,10 +32,15 @@ import com.example.carpoolgl.bean.payRequestInfo;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderPresenter;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderView;
 import com.example.carpoolgl.route.RouteActivity;
+import com.example.carpoolgl.util.CostUtil;
 import com.example.carpoolgl.util.RouteUtil;
 import com.example.carpoolgl.util.ToastUtil;
 
+import java.util.Date;
+
 public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOrderPresenter> implements View.OnClickListener ,passenOrderView{
+
+    private static final String TAG="PaOrder";
 
     private CardView cost_card;
     private TextView pa_cost_tv;
@@ -73,7 +82,6 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
     private DriverCarInfo driverCarInfo;
 
-
     @Override
     public passenOrderPresenter createPresenter() {
         return new passenOrderPresenter();
@@ -111,6 +119,7 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
         setOnClick();
     }
 
+    //控件注册
     public void initController(){
 
         cost_card = findViewById(R.id.cost_card);
@@ -167,11 +176,66 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
                 break;
 
             case R.id.pa_cost_tv:
-                setDialog();
+                //TODO 保存支付订单信息在sharepreference中，
+                // 用于支付订单已经完成，但没有支付，退出应用，再打开应用时候还原支付订单信息
+                // 保存当前剩余的时间点
+
+                // 获取支付判定状态
+                SharedPreferences shEdit = getSharedPreferences("payInfo", Context.MODE_PRIVATE);
+                Integer payCon = shEdit.getInt("payCon",0);
+                if(payCon.equals(1)){   //本地曾经请求过支付订单，进行还原，省的再次进行支付申请
+                    /*  [Log.i]  */Log.i(TAG+"--00","本地存在支付订单编号");
+
+                    String paySeq = shEdit.getString("paySeq","null");
+                    if(paySeq.equals("null")){  //本地sp中，payCon=1，但是paySeq=null，（在首次申请支付时，没有保存完整信息）
+                        ToastUtil.show(Pa_OrderInfoActivity.this,"获取本地订单出错");
+                    }else{  //本地存在申请记录，获取到支付申请订单编号
+                        /*  [Log.i]  */Log.i(TAG+"--01","读取到本地的支付订单编号: "+paySeq);
+
+
+
+//                        String timeStr = shEdit.getString("orderTime","2020-05-22 14:31:00");
+//                        if(!JudgeCutDown(timeStr)){    //支付订单创建5分钟后，一直没有进行密码支付
+//                            /*  [Log.i]  */Log.i(TAG+"--02","支付时间超时，订单起始时间："+timeStr);
+//
+//                            ToastUtil.show(Pa_OrderInfoActivity.this,"支付超时，支付订单已经失效，请重新支付");
+//                            pa_cost_tv.setText("未支付");
+//                            pa_cost_tv.setTextColor(Color.parseColor("#4c90f9"));
+//                            SharedPreferences.Editor payEdit = getSharedPreferences("payInfo",Context.MODE_PRIVATE).edit();
+//                            //覆盖原有的支付订单数据
+//                            payEdit.putInt("payCon",0);                //设置标志位0
+//                            payEdit.putString("paySeq","");            //覆盖编号数据
+//                            payEdit.putString("orderTime", "");        //覆盖时间点
+//
+//                        }else{ //在5分钟内进行支付
+//                            /*  [Log.i]  */Log.i(TAG+"--03","在规定时间内支付");
+//
+//                            showDialog(paySeq);
+//                        }
+                        setDialog();
+
+                        showDialog(paySeq);
+
+                    }
+                }else{      //本地没有请求过支付订单
+                    /*  [Log.i]  */Log.i(TAG+"--10","本地不存在编号，进行申请");
+
+                    setDialogRequest();    //设置窗口pb，开始支付申请
+                }
                 break;
         }
     }
 
+    /*
+    * 查看订单，在查看页面，显示服务端返回的信息，跳转到该页面即获取
+    *
+    * dcInfo: 司机车辆信息，
+    *
+    * result: 获取信息失败、尚未有司机接单、已被成功接单、订单已经完成
+    *
+    * con: 获取订单状态，与result相关联
+    *
+    * */
     @Override
     public void setPaOrderInfo(DriverCarInfo dcInfo,String result,Integer con) {
         if(con.equals(1)){
@@ -196,31 +260,74 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
         ToastUtil.show(this,result);
     }
 
+    /*
+    * 点击支付后，显示dialog
+    * result：0 操作失败 ，1 操作成功
+    * payOrder：支付订单编号
+    * */
     @Override
     public void setPayDialog(Integer result, String payOrder) {
+        /*  [Log.i]  */Log.i(TAG+"--14","setPayDialog回调，支付订单编号："+payOrder);
+
         /*
         * reuslt为1，则表明支付请求通过，可以显示支付页面
+        * 保存支付订单编号
         * */
-        if(result.equals(1)){
+        if(result.equals(1)){           //通过申请
+            /*  [Log.i]  */Log.i(TAG+"--15","请求通过");
+            //对支付按钮样式进行改变
+            pa_cost_tv.setText("待支付");
+            pa_cost_tv.setTextColor(Color.parseColor("#FAD55215"));
+            //保存订单编号，设置payCon为1
+            SharedPreferences.Editor payEdit = getSharedPreferences("payInfo",Context.MODE_PRIVATE).edit();
+            payEdit.putInt("payCon",1);                      //判断支付申请通过的标志，第一次申请支付时，保存数据
+            payEdit.putString("paySeq",payOrder);            //支付订单
+            String nowTime = CostUtil.getNowTime();
+            /*  [Log.i]  */Log.i(TAG+"--15.1","获取当前时间: "+nowTime);
+            payEdit.putString("orderTime", CostUtil.getNowTime());//记录当前时间点
+            payEdit.apply();
+
+            //dialog 页面隐藏pb，显示密码支付layout
             showDialog(payOrder);
-            //TODO 保存支付订单信息在sharepreference中，
-            // 用于支付订单已经完成，但没有支付，退出应用，再打开应用时候还原支付订单信息，
         }
     }
 
+    /*
+    * 页面显示支付结果
+    * */
     @Override
     public void PayingDialog(Integer result,String payResult) {
         if(result.equals(1)){
             ToastUtil.show(this,payResult);
+            pa_cost_tv.setText("已经支付");
+            pa_cost_tv.setTextColor(Color.parseColor("#FA33D636"));
             dialog.dismiss();
-        }else {
-            ToastUtil.show(this,"支付失败");
-            dialog.dismiss();
+        }else if(result.equals(-1)){    //支付失败 密码错误、金额不足
+            ToastUtil.show(this,payResult);
+            pay_dialog_ly.setVisibility(View.VISIBLE);      //显示linearLayout
+            pay_dialog_pb.setVisibility(View.GONE);         //隐藏pb
+//            dialog.dismiss();
+        }else if(result.equals(-2)){    //支付出错
+            ToastUtil.show(this,payResult);
+            pay_dialog_ly.setVisibility(View.VISIBLE);      //显示linearLayout
+            pay_dialog_pb.setVisibility(View.GONE);         //隐藏pb
+//            dialog.dismiss();
         }
     }
     /*
     * 显示支付窗口
     * 窗口先显示pb 等待支付请求结果
+    * */
+    public void setDialogRequest(){
+
+        setDialog();
+        /*  [Log.i]  */Log.i(TAG+"--11","界面设置完毕，开始支付请求");
+        //开始支付请求
+        presenter.payRequest(this,getPayReInfo());
+    }
+
+    /*
+    * 初始化dialog
     * */
     public void setDialog(){
         builder = new AlertDialog.Builder(this);
@@ -240,8 +347,6 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        //开始支付请求
-        presenter.payRequest(this,getPayReInfo());
     }
 
     /*
@@ -256,6 +361,7 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     * 支付请求通过，dialog界面由pb转换为密码输入框
     * */
     public void showDialog(final String seq){
+        /*  [Log.i]  */Log.i(TAG+"--16","进入showDialog，进行密码输入");
 //        builder.setTitle("支付订单："+seq);
         dialog.setTitle("支付订单："+seq);
         pay_dialog_ly.setVisibility(View.VISIBLE);      //显示linearLayout
@@ -268,24 +374,60 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
         pay_dialog_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {        //设置支付点击事件
-                //TODO 判断密码是否输入
-                /* function()  */
 
-                ToastUtil.show(Pa_OrderInfoActivity.this,"支付");
-                PayOrder payOrder = new PayOrder(seq,
-                        driverCarInfo.getPassenSeq(),
-                        driverCarInfo.getDriverSeq(),
-                        driverCarInfo.getAppreMoney()+driverCarInfo.getSingleMoney(),
-                        pay_dialog_et.getText().toString());
                 /*
-                * 进行支付请求
-                *
-                * 先注释，测试前面支付请求显示
+                * 密码长度判断
                 * */
-//                presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
-                ToastUtil.show(Pa_OrderInfoActivity.this,"进行支付");
+                Integer editLength = pay_dialog_et.getText().length();
+                if(editLength<4){//没有输入密码或输入不全
+                    ToastUtil.show(Pa_OrderInfoActivity.this,"密码输入不全");
+                }else{  //密码长度符合
+                    /*
+                    * 判断时间是否在5分钟以内
+                    * */
+                    SharedPreferences shEdit = getSharedPreferences("payInfo", Context.MODE_PRIVATE);
+                    String timeStr = shEdit.getString("orderTime","2020-05-22 14:31:00");
+                    if(!JudgeCutDown(timeStr)){    //支付订单创建5分钟后，一直没有进行密码支付
+                        /*  [Log.i]  */Log.i(TAG+"--03","支付时间超时，订单起始时间："+timeStr);
+
+                        ToastUtil.show(Pa_OrderInfoActivity.this,"支付超时，支付订单已经失效，请重新支付");
+                        pa_cost_tv.setText("未支付");
+                        pa_cost_tv.setTextColor(Color.parseColor("#4c90f9"));
+                        SharedPreferences.Editor payEdit = getSharedPreferences("payInfo",Context.MODE_PRIVATE).edit();
+                        //覆盖原有的支付订单数据
+                        payEdit.putInt("payCon",0);                //设置标志位0
+                        payEdit.putString("paySeq","");            //覆盖编号数据
+                        payEdit.putString("orderTime", "");        //覆盖时间点
+                        payEdit.apply();
+
+                        dialog.dismiss();           //关闭窗口
+
+                    }else{  //在5分钟以内进行了支付
+                        /*  [Log.i]  */Log.i(TAG+"--17","密码输入完毕");
+//                        ToastUtil.show(Pa_OrderInfoActivity.this,"支付");
+                        //初始化支付信息
+                        PayOrder payOrder = new PayOrder(seq,
+                                driverCarInfo.getPassenSeq(),
+                                driverCarInfo.getDriverSeq(),
+                                driverCarInfo.getAppreMoney()+driverCarInfo.getSingleMoney(),
+                                pay_dialog_et.getText().toString());
+                        /*
+                         * 进行支付操作
+                         *
+                         * */
+                        pay_dialog_ly.setVisibility(View.GONE); //隐藏密码界面
+                        pay_dialog_pb.setVisibility(View.VISIBLE);//显示pb
+                        TimeCutDown();
+                        presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
+//                    ToastUtil.show(Pa_OrderInfoActivity.this,"进行支付");
+                        // 网络问题导致的超时问题，界面变换
+
+
+                    }
+                }
             }
         });
+
 
         /*
         * 取消
@@ -299,4 +441,41 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             }
         });
     }
+
+    public void TimeCutDown(){
+
+        final CountDownTimer timer = new CountDownTimer(25000,1000){
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {    //超时
+                /*  [Log.i]  */Log.i(TAG+"--20","密码输入超时");
+                pay_dialog_ly.setVisibility(View.VISIBLE); //显示密码界面
+                pay_dialog_pb.setVisibility(View.GONE);//隐藏pb
+            }
+        }.start();
+
+    }
+
+    public Boolean JudgeCutDown(String timeStr){
+        long cutDown = 300;  //5分钟
+        try{
+            Date OrderDate = CostUtil.StringToDate(timeStr);
+            Date NowDate = CostUtil.StringToDate(CostUtil.getNowTime());
+            cutDown = (NowDate.getTime()-OrderDate.getTime())/1000; //转换成秒
+        }catch (Exception e){
+            cutDown = 1000;
+            e.printStackTrace();
+        }
+        Boolean flag = false;
+        if(cutDown>300){    //时间超时
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }
