@@ -1,4 +1,4 @@
-package com.example.carpoolgl.base;
+package com.example.carpoolgl.base.activity;
 
 import android.os.Bundle;
 

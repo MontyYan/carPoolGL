@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.carpoolgl.Static.activityList;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +40,9 @@ public class PhoneActivity extends AppCompatActivity implements View.OnClickList
                 if(IsPhoneNum(phone_et.getText().toString())){
                     intent.putExtra("phoneNum",phone_et.getText().toString());
                     Log.i("PhoneAactivity",phone_et.getText().toString());
+
+                    activityList.AddActivity("phoneActivity",this);
+
                     startActivity(intent);
                 }
                 break;

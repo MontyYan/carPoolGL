@@ -1,4 +1,6 @@
 package com.example.carpoolgl.join.driver;
 
-public class driverJoinModel {
+import com.example.carpoolgl.base.activity.baseModel;
+
+public class driverJoinModel extends baseModel {
 }

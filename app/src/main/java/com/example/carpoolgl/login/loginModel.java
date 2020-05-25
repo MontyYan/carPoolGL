@@ -1,5 +1,6 @@
 package com.example.carpoolgl.login;
 
+import android.app.Activity;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -7,7 +8,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.carpoolgl.Static.STATIC_CLASS;
+import com.example.carpoolgl.base.activity.baseModel;
 import com.example.carpoolgl.bean.User;
 import com.google.gson.Gson;
 
@@ -17,7 +20,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class loginModel {
+public class loginModel extends baseModel implements baseModel.backJson{
     public static final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
     private static final int UPDATA_TV = 0;
     private static final String TAG="loginModel";
@@ -59,6 +62,47 @@ public class loginModel {
             }
         }).start();
     }
+
+
+    public static final String registerUrl= STATIC_CLASS.getUrl() +"/register";
+    private static final String REG = "registerModel";
+    private Activity activity;
+    private loginView loginView;
+
+    public void register(Activity activity,User user,loginView loginV){
+        Log.i(REG+"00",user.toString());
+        this.activity = activity;
+        this.loginView = loginV;
+        String jsonString = JSONObject.toJSONString(user);
+        PostResponse(registerUrl,REG,jsonString,this);
+
+
+    }
+
+    @Override
+    public void setJOSNObject(JSONObject jsonObject) {
+        Integer result = 0;
+        String info = "注册失败_";
+
+        if(!jsonObject.isEmpty()){
+            result = jsonObject.getInteger("result");
+            info = jsonObject.getString("info");
+        }
+
+        final Integer tempresult = result;
+        final String tempInfo = info;
+
+        //回主线程进行更新
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+//                loginView.
+
+            }
+        });
+    }
+
+
     /*
     public void login_(final String phoneNum, final String password, final loginView loginV, TextView loginResult){
         final mHandler handler = new mHandler(loginResult);

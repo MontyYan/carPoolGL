@@ -29,6 +29,9 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.example.carpoolgl.R;
+import com.example.carpoolgl.util.RegexUtil;
+
+import java.util.regex.Pattern;
 
 public class chooseLocPresenter implements
         LocationSource,
@@ -36,6 +39,7 @@ public class chooseLocPresenter implements
         GeocodeSearch.OnGeocodeSearchListener,
         AMap.OnCameraChangeListener {
 
+    private static final String TAG="Search_P";
     private Context mcontext;
     private chooseLocView chooseLocV;
     private int[] Screen;
@@ -107,7 +111,7 @@ public class chooseLocPresenter implements
         mGPSMarker.setVisible(true);
         if(!TextUtils.isEmpty(content)){
 //            Log.e("textutil",TextUtils.isEmpty(content)+"");
-            mGPSMarker.showInfoWindow();
+                mGPSMarker.showInfoWindow();
         }
         mapView.invalidate();
 
@@ -201,20 +205,20 @@ public class chooseLocPresenter implements
                     && Result.getRegeocodeAddress().getFormatAddress()!=null){
 //                String[] ad = Result.getRegeocodeAddress().getFormatAddress().split("道");
                 String ad = Result.getRegeocodeAddress().getFormatAddress();
-//                address = Result.getRegeocodeAddress().getDistrict()+" "+
-//                        Result.getRegeocodeAddress().getTownship()+" "+
-//                        ad[1];
-//                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad[1];
-                address = Result.getRegeocodeAddress().getDistrict()+" "+ ad;
-                Log.e("逆编码回调的地址0",address);
-                Log.e("逆编码回调的地址1",Result.getRegeocodeAddress().getFormatAddress());//江苏省苏州市姑苏区双塔街道杨枝二村苏大家属区18幢杨枝二村苏大家属区
-                Log.e("逆编码回调的地址2",Result.getRegeocodeAddress().getBuilding());//
-                Log.e("逆编码回调的地址3",Result.getRegeocodeAddress().getCity());//苏州市
-                Log.e("逆编码回调的地址4",Result.getRegeocodeAddress().getCountry());//中国
-                Log.e("逆编码回调的地址5",Result.getRegeocodeAddress().getDistrict());//姑苏区
-                Log.e("逆编码回调的地址6",Result.getRegeocodeAddress().getNeighborhood());//
-                Log.e("逆编码回调的地址7",Result.getRegeocodeAddress().getProvince());//江苏省
-                Log.e("逆编码回调的地址8",Result.getRegeocodeAddress().getTownship());//双塔街道
+                String district = Result.getRegeocodeAddress().getDistrict();
+                String Township = Result.getRegeocodeAddress().getTownship();
+
+                address = RegexUtil.regex(ad,district,Township);
+                Log.i(TAG+"District",address);
+                Log.i(TAG+"Address",Result.getRegeocodeAddress().getFormatAddress());//江苏省苏州市姑苏区双塔街道杨枝二村苏大家属区18幢杨枝二村苏大家属区
+                Log.i(TAG+"Building",Result.getRegeocodeAddress().getBuilding());//
+                Log.i(TAG+"City;",Result.getRegeocodeAddress().getCity());//苏州市
+                Log.i(TAG+"Country",Result.getRegeocodeAddress().getCountry());//中国
+                Log.i(TAG+"District",Result.getRegeocodeAddress().getDistrict());//姑苏区
+                Log.i(TAG+"Neighbor",Result.getRegeocodeAddress().getNeighborhood());//
+                Log.i(TAG+"Province",Result.getRegeocodeAddress().getProvince());//江苏省
+                Log.i(TAG+"Township",Result.getRegeocodeAddress().getTownship());//双塔街道
+
             }
             chooseLocV.LocInfo_SetText(address);
 

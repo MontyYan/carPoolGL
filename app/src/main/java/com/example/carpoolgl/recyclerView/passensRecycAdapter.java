@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
+import com.example.carpoolgl.Dr_OrderInfoActivity;
 import com.example.carpoolgl.R;
+import com.example.carpoolgl.Static.STATIC_CLASS;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.RelPassMems;
 import com.example.carpoolgl.bean.mLonLat;
@@ -38,12 +40,15 @@ public class passensRecycAdapter extends RecyclerView.Adapter<passensRecycAdapte
 
     class myHolder extends RecyclerView.ViewHolder{
         private TextView passName;
+        private TextView paymoney;
+        private TextView togetherNum;
         private TextView passPhone;
-
 
         public myHolder(@NonNull View itemView){
             super(itemView);
             passName = itemView.findViewById(R.id.passen_name_tv);
+            paymoney = itemView.findViewById(R.id.passen_paymoney_tv);
+            togetherNum = itemView.findViewById(R.id.passen_togetNum_tv);
             passPhone = itemView.findViewById(R.id.passen_phone_tv);
 
         }
@@ -56,6 +61,7 @@ public class passensRecycAdapter extends RecyclerView.Adapter<passensRecycAdapte
                 .inflate(R.layout.item_passens_recyc,parent,false);
 //        View itemview = View.inflate(context,R.layout.item_orders_recyc,null);
         myHolder holder = new myHolder(itemview);
+
         return holder;
     }
 
@@ -64,7 +70,10 @@ public class passensRecycAdapter extends RecyclerView.Adapter<passensRecycAdapte
         final RelPassMems passMems = datas.get(position);
         Log.i("driverOrderr_M5",passMems.toString());
         holder.passName.setText(passMems.getName());
+        holder.paymoney.setText(STATIC_CLASS.getSingleMoney()+passMems.getAprMoney()+"");
+        holder.togetherNum.setText("人数： "+passMems.getTogetherNum());
         holder.passPhone.setText(passMems.getPhone());
+
     }
 
 

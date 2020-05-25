@@ -1,9 +1,11 @@
 package com.example.carpoolgl.login;
 
+import android.app.Activity;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.carpoolgl.base.activity.basePresenter;
+import com.example.carpoolgl.bean.User;
 
 public class loginPresenter extends basePresenter<loginView> {
 
@@ -30,4 +32,10 @@ public class loginPresenter extends basePresenter<loginView> {
                 Login_button
         );
     }
+
+
+    public void register(Activity activity, User user){
+        this.model.register(activity,user,getView());
+    }
+
 }

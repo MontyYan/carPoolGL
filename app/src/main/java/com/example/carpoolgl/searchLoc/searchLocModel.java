@@ -1,4 +1,6 @@
 package com.example.carpoolgl.searchLoc;
 
-public class searchLocModel {
+import com.example.carpoolgl.base.activity.baseModel;
+
+public class searchLocModel extends baseModel {
 }

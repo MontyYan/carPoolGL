@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.carpoolgl.LoginActivity;
 import com.example.carpoolgl.MainActivity;
 import com.example.carpoolgl.Static.STATIC_CLASS;
+import com.example.carpoolgl.Static.activityList;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.dataBase.MydbHelper;
@@ -88,6 +89,7 @@ public class mHandler extends Handler {
                 Intent intent = new Intent(context, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setClass(context,MainActivity.class);
+                activityList.DestoryActivity("phoneActivity");
                 context.startActivity(intent);
                 break;
 //            case LOGIN_PROGRESS:
@@ -105,6 +107,9 @@ public class mHandler extends Handler {
         shaEdit.putString("name",user.getName());
         shaEdit.putString("registerDate",user.getRegisterDate()+"");
         shaEdit.putString("sequence",user.getUserSeq());
+
+        shaEdit.putString("carSeq",user.getCarSeq());
+
         shaEdit.apply();
     }
 

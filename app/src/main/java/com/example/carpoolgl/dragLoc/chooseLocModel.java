@@ -1,4 +1,6 @@
 package com.example.carpoolgl.dragLoc;
 
-public class chooseLocModel {
+import com.example.carpoolgl.base.activity.baseModel;
+
+public class chooseLocModel extends baseModel {
 }

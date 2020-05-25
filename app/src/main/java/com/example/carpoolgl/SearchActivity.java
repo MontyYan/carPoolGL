@@ -100,10 +100,6 @@ public class SearchActivity extends AppCompatActivity implements
 
         mapView.onCreate(savedInstanceState);
         chooseLocP = new chooseLocPresenter(mapView);
-//        chooseLocP = new chooseLocPresenter(getApplicationContext(),mapView,getScreenWH());
-//        chooseLocP.attachView(this);
-        //initDatas();
-        //initRecyclerview();
     }
 
     //**TextWatcher*****************************************************************************************************************************

@@ -33,6 +33,7 @@ import com.example.carpoolgl.main.mainPresenter;
 import com.example.carpoolgl.main.mainView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
+import com.example.carpoolgl.util.ToastUtil;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
@@ -75,6 +76,10 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
     private PassengerFragment pfrag;
     private DriverFragment dfrag;
 
+    /*
+    * 判断是否有发布订单的标志
+    * */
+    private Integer PDCon = 3;  //默认显示为两个身份都没有发布订单
 
 
     @Override
@@ -93,20 +98,33 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
         setContentView(R.layout.activity_main);
         pfrag = new PassengerFragment();
         dfrag = new DriverFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_container,pfrag).commitAllowingStateLoss();
-        InitDrawer();
+
         initController();
-        //创建数据库button test
-//        cre_db_Test = findViewById(R.id.cre_db);
-//        cre_db_Test.setOnClickListener(this);
-        findLocInfo_();
+        InitDrawer();
         init_Info_order();
-//        mainPresenter mp = new mainPresenter(MainActivity.this);
-//        mp.attachView(this);
-//        mp.findLocUInfo();
-//        mp.detachView();
-//        nowLocP = new nowLocPresenter(getApplicationContext());
-//        nowLocP.attachView(this);
+
+        selectFragment();
+//        getSupportFragmentManager().beginTransaction().add(R.id.fl_container,pfrag).commitAllowingStateLoss();
+        findLocInfo_();
+
+    }
+
+    /*
+    * 判断打开哪一个fragment
+    * */
+    public void selectFragment(){
+        switch (PDCon){
+            case 1: //乘客发布订单状态
+                getSupportFragmentManager().beginTransaction().add(R.id.fl_container,pfrag).commitAllowingStateLoss();
+                break;
+            case 2: //司机发布订单状态
+                getSupportFragmentManager().beginTransaction().add(R.id.fl_container,dfrag).commitAllowingStateLoss();
+                break;
+            case 3: //其他状态
+                getSupportFragmentManager().beginTransaction().add(R.id.fl_container,pfrag).commitAllowingStateLoss();
+
+                break;
+        }
     }
 
     //实现初始化已发布订单信息与已登录用户信息
@@ -116,20 +134,6 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
     }
 
     public void initController(){
-//        getOnTv = findViewById(R.id.getOn_TV);
-//        getOnTv.setOnClickListener(this);
-//        getOffTv = findViewById(R.id.getOff_TV);
-//        getOffTv.setOnClickListener(this);
-////        searchRoute = findViewById(R.id.searchRoute);
-////        searchRoute.setOnClickListener(this);
-//        main_published_order_cv = findViewById(R.id.main_published_order_cv);
-//        main_start_loc_tv=findViewById(R.id.main_start_loc_tv);
-//        main_end_loc_tv = findViewById(R.id.main_end_loc_tv);
-//        main_date_tv = findViewById(R.id.main_date_tv);
-//        main_num_tv = findViewById(R.id.main_num_tv);
-//        main_orderDetail_bt = findViewById(R.id.main_orderDetail_bt);
-//        main_orderDetail_bt.setOnClickListener(this);
-//        main_money_tv = findViewById(R.id.main_money_tv);
         driver_rb = findViewById(R.id.driver_rb);
         driver_rb.setOnClickListener(this);
         passenger_rb = findViewById(R.id.passenger_rb);
@@ -154,11 +158,26 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
                 break;
             case R.id.driver_rb:
 //                ToastUtil.show(this,"切换到司机");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,dfrag).commitAllowingStateLoss();
+                if(PDCon.equals(1)){
+                    ToastUtil.show(MainActivity.this,"当前订单未完成，不可以切换身份");
+                    passenger_rb.performClick();
+                }else if(PDCon.equals(4)){
+                    ToastUtil.show(MainActivity.this,"未加入司机，不可以使用司机身份");
+                    passenger_rb.performClick();
+                }else if(PDCon.equals(3)){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,dfrag).commitAllowingStateLoss();
+                }
+
                 break;
             case R.id.passenger_rb:
+                if(PDCon.equals(2)){
+                    ToastUtil.show(MainActivity.this,"当前订单未完成，不可以切换身份");
+                    driver_rb.performClick();
+                }else if(PDCon.equals(3)){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,pfrag).commitAllowingStateLoss();
+
+                }
 //                ToastUtil.show(this,"切换到乘客");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fl_container,pfrag).commitAllowingStateLoss();
                 break;
         }
     }
@@ -239,10 +258,35 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
         mNavigation = findViewById(R.id.nav_view);
         QuitTv = mNavigation.findViewById(R.id.quit);
         QuitTv.setOnClickListener(this);
+
+
         mNavigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
+                Intent intent;
+                switch (item.getItemId()){
+                    case R.id.nav_record:
+                        intent = new Intent(MainActivity.this,RecordActivity.class);
+                        startActivity(intent);
+//                        ToastUtil.show(MainActivity.this,"nav_record");
+                        break;
+                    case R.id.nav_change:
+                        ToastUtil.show(MainActivity.this,"nav_safe");
+                        break;
+                    case R.id.nav_money:
+                        ToastUtil.show(MainActivity.this,"nav_money");
+                        break;
+
+                    case R.id.nav_Join_dr:
+                        intent  = new Intent(MainActivity.this,JoinDrActivity.class );
+                        intent.putExtra("userSeq",STATIC_USERINFO.getUserSeq());
+                        startActivity(intent);
+                        break;
+
+                }
+
+                //点击任意都是关闭窗口
+//                mDrawerLayout.closeDrawers();
                 return true;
             }
         });
@@ -280,14 +324,10 @@ public class MainActivity extends baseActivity<mainView,mainPresenter> implement
         regDate_Navheader_tv.setText("注册日期："+STATIC_USERINFO.getRegisterDate());
     }
 
+
     @Override
-    public void SetOrder(RelOrder order) {
-        main_published_order_cv.setVisibility(View.VISIBLE);
-        main_start_loc_tv.setText(order.getStartLoc());
-        main_end_loc_tv.setText(order.getEndLoc());
-        main_date_tv.setText(order.getStartTime().substring(5));
-        main_num_tv.setText(order.getPassNum()+"");
-        main_money_tv.setText(order.getMoney()+"");
+    public void SetCon(Integer Con) {
+        this.PDCon = Con;
     }
 
     //toast当前中文地址

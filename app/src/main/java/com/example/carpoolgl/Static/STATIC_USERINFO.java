@@ -17,6 +17,8 @@ public class STATIC_USERINFO {
     private static String name="";
     private static String identityId="";
 
+    public static String carSeq="";
+
     public static Integer getCon() {
         return conCode;
     }

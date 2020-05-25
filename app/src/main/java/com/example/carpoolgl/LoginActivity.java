@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.carpoolgl.Static.STATIC_USERINFO;
+import com.example.carpoolgl.Static.activityList;
 import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.User;
 import com.example.carpoolgl.bean.User_;
@@ -30,8 +31,7 @@ import java.util.List;
 
 import okhttp3.MediaType;
 
-public class LoginActivity extends baseActivity<loginView,loginPresenter>
-        implements View.OnClickListener,loginView {
+public class LoginActivity extends baseActivity<loginView,loginPresenter> implements View.OnClickListener,loginView {
 
     //作为Message.what标识
     private static final int UPDATA_SP = 1;
@@ -106,11 +106,13 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
             case R.id.register_tv:
                 intent = new Intent(LoginActivity.this,RegisterActivity.class);
                 intent.putExtra("phoneNum",phoneNum);
+                activityList.AddActivity("LoginActivity",this);
                 startActivity(intent);
                 break;
             case R.id.msgLogin_tv:
                 intent = new Intent(LoginActivity.this,msgLoginActivity.class);
                 intent.putExtra("phoneNum",phoneNum);
+                activityList.AddActivity("LoginActivity",this);
                 startActivity(intent);
                 break;
         }
@@ -262,6 +264,11 @@ public class LoginActivity extends baseActivity<loginView,loginPresenter>
         }).start();
         Log.i(TAG,"thread运行结束");
         Log.i(TAG,STATIC_USERINFO.getCon()+"");
+
+    }
+
+    @Override
+    public void onRegisteResult(Integer result, String info) {
 
     }
 

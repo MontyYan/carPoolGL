@@ -1,4 +1,4 @@
-package com.example.carpoolgl.base;
+package com.example.carpoolgl.base.activity;
 
 public abstract class basePresenter<V extends baseView> {
     private V view;

@@ -1,9 +1,16 @@
 package com.example.carpoolgl.NaviDriving;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.navi.AMapNavi;
@@ -16,23 +23,37 @@ import com.amap.api.navi.view.RouteOverLay;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.carpoolgl.R;
 import com.example.carpoolgl.util.RouteUtil;
+import com.example.carpoolgl.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GPSNaviActivity extends BaseActivity {
+public class GPSNaviActivity extends BaseActivity implements View.OnClickListener{
 
     protected final List<NaviLatLng> startList = new ArrayList<NaviLatLng>();
     protected final List<NaviLatLng> endList = new ArrayList<NaviLatLng>();
 
     private AMap aMap;
+    private Button route_over_bt;
+
+    private TextView tips_tv;
+    private ProgressBar requesting_pb;
+    private Button finish_cancel_bt;
+    private Button finish_dialog_bt;
+
+    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
+
+    private String orderSeq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpsnavi);
 
-        mAMapNaviView = findViewById(R.id.navi_view);
+//        Intent intent = getIntent();
+//        orderSeq = intent.getStringExtra("orderSeq");
+        initController();
         getRouteInfo();
         mAMapNaviView.onCreate(savedInstanceState);
         mAMapNaviView.setAMapNaviViewListener(this);
@@ -44,13 +65,31 @@ public class GPSNaviActivity extends BaseActivity {
 
     }
 
+    public void initController(){
+        mAMapNaviView = findViewById(R.id.navi_view);
+        route_over_bt = findViewById(R.id.route_over_bt);
+        route_over_bt.setOnClickListener(this);
+    }
+
+
     public void getRouteInfo(){
         Intent intent = getIntent();
         LatLonPoint spoint  = intent.getParcelableExtra("mStartPoint");
         LatLonPoint epoint  = intent.getParcelableExtra("mEndPoint");
         startList.add(RouteUtil.PointToNaviLL(spoint));
         endList.add(RouteUtil.PointToNaviLL(epoint));
+        orderSeq = intent.getStringExtra("orderSeq");
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.route_over_bt:
+                setDialog();
+
+                break;
+        }
     }
 
     @Override
@@ -104,4 +143,66 @@ public class GPSNaviActivity extends BaseActivity {
 
         mAMapNavi.startNavi(NaviType.GPS);
     }
+
+
+    public void finishRequest(){
+        getPresenter().OverOrder(this,orderSeq);
+        tips_tv.setVisibility(View.GONE);
+        requesting_pb.setVisibility(View.VISIBLE);
+        finish_dialog_bt.setVisibility(View.GONE);
+        finish_cancel_bt.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void Finishresponse(Integer result,String response) {
+        ToastUtil.show(this,"结束行程成功");
+        dialog.dismiss();
+        finish();
+    }
+
+
+    public void setDialog(){
+        builder = new AlertDialog.Builder(this);
+        dialog = builder.create();
+        dialog.setTitle("结束行程");
+        View view = LayoutInflater.from(this).inflate(R.layout.finishorder_dialog,null);
+        tips_tv = view.findViewById(R.id.tips_tv);
+        requesting_pb = view.findViewById(R.id.requesting_pb);
+        finish_dialog_bt = view.findViewById(R.id.finish_dialog_bt);
+        finish_cancel_bt = view.findViewById(R.id.finish_cancel_bt);
+
+        tips_tv.setText("确定结束行程");
+
+        tips_tv.setVisibility(View.VISIBLE);
+        requesting_pb.setVisibility(View.GONE);
+        finish_dialog_bt.setVisibility(View.VISIBLE);
+        finish_cancel_bt.setVisibility(View.VISIBLE);
+
+        dialog.setView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        finish_dialog_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.show(GPSNaviActivity.this,"确定结束");
+                finishRequest();
+            }
+        });
+        finish_cancel_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.dismiss();
+            }
+        });
+
+
+    }
+
+    public void overOrder(){
+
+
+    }
+
 }

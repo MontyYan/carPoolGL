@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import com.alibaba.fastjson.JSON;
 import com.amap.api.services.route.DriveStep;
 import com.example.carpoolgl.Static.STATIC_CLASS;
+import com.example.carpoolgl.base.activity.baseModel;
 import com.example.carpoolgl.bean.RelOrder;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class publishModel {
+public class publishModel extends baseModel {
     public static final MediaType JSON_=MediaType.parse("application/json; charset=utf-8");
     private static final int UPDATA_TV = 0;
     private static final String TAG="publishModel";

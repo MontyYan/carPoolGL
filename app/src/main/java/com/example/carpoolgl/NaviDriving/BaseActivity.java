@@ -25,6 +25,9 @@ import com.amap.api.navi.model.AimLessModeStat;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
+import com.example.carpoolgl.NaviDriving.overOrder.OverOrderPresenter;
+import com.example.carpoolgl.NaviDriving.overOrder.OverOrderView;
+import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.util.ErrorInfo;
 import com.example.carpoolgl.util.TTSController;
 
@@ -32,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BaseActivity extends Activity implements AMapNaviListener, AMapNaviViewListener {
+public class BaseActivity extends baseActivity<OverOrderView, OverOrderPresenter> implements AMapNaviListener, AMapNaviViewListener,OverOrderView {
 
     protected AMapNaviView mAMapNaviView;
     protected AMapNavi mAMapNavi;
@@ -42,6 +45,16 @@ public class BaseActivity extends Activity implements AMapNaviListener, AMapNavi
     protected final List<NaviLatLng> sList = new ArrayList<NaviLatLng>();
     protected final List<NaviLatLng> eList = new ArrayList<NaviLatLng>();
     protected List<NaviLatLng> mWayPointList = new ArrayList<NaviLatLng>();
+
+    @Override
+    public OverOrderPresenter createPresenter() {
+        return new OverOrderPresenter();
+    }
+
+    @Override
+    public OverOrderView createView() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -347,6 +360,11 @@ public class BaseActivity extends Activity implements AMapNaviListener, AMapNavi
 
     @Override
     public void onNaviRouteNotify(AMapNaviRouteNotifyData aMapNaviRouteNotifyData) {
+
+    }
+
+    @Override
+    public void Finishresponse(Integer result, String response) {
 
     }
 }

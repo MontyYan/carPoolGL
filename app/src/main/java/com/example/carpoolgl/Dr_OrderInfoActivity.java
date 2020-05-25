@@ -151,6 +151,7 @@ public class Dr_OrderInfoActivity extends baseActivity<driverOrderView, driverOr
                 intent = new Intent(this, GPSNaviActivity.class);
                 intent.putExtra("mStartPoint",mStartPoint);
                 intent.putExtra("mEndPoint",mEndPoint);
+                intent.putExtra("orderSeq",orderSeq);
                 startActivity(intent);
 
 //                Navi();

@@ -11,8 +11,6 @@ import java.util.Date;
  */
 
 public class User {
-
-
     @SerializedName(value = "seq",alternate="userSeq")
     private String UserSeq;             //PA00000001    用户编号
     @SerializedName(value = "phone",alternate = "Phone")
@@ -34,10 +32,23 @@ public class User {
 //    @SerializedName(value = "phone")
     private String IdentityId;          //1600300333    学号/工号
 
+    private String CarSeq;
+
+    public User(){
+    }
+
     public User(String phone, String password, Integer loginWays) {
         this.Phone = phone;
         this.Password = password;
         this.LoginWays = loginWays;
+    }
+
+    public String getCarSeq() {
+        return CarSeq;
+    }
+
+    public void setCarSeq(String carSeq) {
+        CarSeq = carSeq;
     }
 
     public String getUserSeq() {

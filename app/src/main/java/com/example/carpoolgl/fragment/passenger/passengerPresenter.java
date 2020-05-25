@@ -16,4 +16,6 @@ public class passengerPresenter extends baseFragPresenter<passengerView> {
 //        this.model.findUInfo(context,view);
         this.model.findOrder(context,getView());
     }
+
+
 }

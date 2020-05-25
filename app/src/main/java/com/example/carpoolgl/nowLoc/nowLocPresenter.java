@@ -53,7 +53,7 @@ public class nowLocPresenter {
 
                     nowLocView.setGetonText(buffer.toString());
 //                    LatLonPoint latLonPoint = new LatLonPoint(aMapLocation.getLongitude(),aMapLocation.getLatitude());
-                    nowLocView.setLatLon(aMapLocation.getLongitude(),aMapLocation.getLatitude());
+                    nowLocView.setLatLon(aMapLocation.getLatitude(),aMapLocation.getLongitude());
 //                    Toast.makeText(mContext, buffer.toString(), Toast.LENGTH_LONG).show();
                     mClient.stopLocation();
                 }

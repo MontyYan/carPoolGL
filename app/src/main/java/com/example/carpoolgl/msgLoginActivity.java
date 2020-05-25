@@ -120,10 +120,14 @@ public class msgLoginActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }else if(event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE){
                     if (result == SMSSDK.RESULT_COMPLETE) {
+
+
                         // TODO 处理验证码验证通过的结果
                         Log.i(TAG,"i == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE");
                         ToastUtil.show(msgLoginActivity.this,"验证成功");
                     } else {
+
+
                         // TODO 处理错误的结果
                         ToastUtil.show(msgLoginActivity.this,"验证失败");
                         ((Throwable) data).printStackTrace();

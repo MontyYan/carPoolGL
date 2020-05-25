@@ -36,7 +36,9 @@ public class passengerModel {
         Integer result = shapre.getInt("orderConCode",0);
         if(result.equals(1)){
             String orderJson = shapre.getString("orderJson","").replaceAll("&quot;","");
+            Integer con = shapre.getInt("condition",0);
             RelOrder order = JSONObject.parseObject(orderJson,RelOrder.class);//relorder Json格式映射
+            order.setCondition(con);
             passV.SetOrder(order);
         }
     }

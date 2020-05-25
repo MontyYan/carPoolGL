@@ -1,7 +1,9 @@
 package com.example.carpoolgl.fragment;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +24,15 @@ import com.example.carpoolgl.R;
 import com.example.carpoolgl.SearchActivity;
 import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.base.fragment.baseFragment;
+import com.example.carpoolgl.bean.RecordInfo;
 import com.example.carpoolgl.bean.RelOrder;
+import com.example.carpoolgl.dataBase.orderRecord.RecordHelper;
 import com.example.carpoolgl.fragment.passenger.passengerPresenter;
 import com.example.carpoolgl.fragment.passenger.passengerView;
 import com.example.carpoolgl.nowLoc.nowLocPresenter;
 import com.example.carpoolgl.nowLoc.nowLocView;
 import com.example.carpoolgl.util.RouteUtil;
+import com.example.carpoolgl.util.ToastUtil;
 import com.google.android.material.navigation.NavigationView;
 
 public class PassengerFragment extends baseFragment<passengerView, passengerPresenter> implements View.OnClickListener, nowLocView, passengerView{
@@ -62,6 +67,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
     private Button pa_orderDetail_bt;
     private TextView pa_money_tv;
     private RelOrder order;
+
 
     @Nullable
     @Override
@@ -108,6 +114,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
         getOnTv.setOnClickListener(this);
         getOffTv.setOnClickListener(this);
         pa_orderDetail_bt.setOnClickListener(this);
+
     }
 
     @Override
@@ -145,8 +152,14 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
             case R.id.pa_orderDetail_bt:
                 intent = new Intent(getActivity(), Pa_OrderInfoActivity.class);
                 intent.putExtra("order",this.order);
+                Log.i("paorderinfo",order.toString());
                 startActivity(intent);
                 break;
+
+//            case R.id.insetTest_bt:
+//                insertTest();
+//                ToastUtil.show(getActivity(),"点击插入数据");
+//                break;
 
         }
     }
@@ -167,6 +180,7 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
     @Override
     public void SetOrder(RelOrder order) {
         this.order = order;
+
         pa_published_order_cv.setVisibility(View.VISIBLE);
         pa_start_loc_tv.setText(order.getStartLoc());
         pa_end_loc_tv.setText(order.getEndLoc());
@@ -188,8 +202,6 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
         nowLatLon.setLatitude(lat);
     }
 
-
-
     //销毁
     @Override
     public void onDestroy() {
@@ -197,6 +209,8 @@ public class PassengerFragment extends baseFragment<passengerView, passengerPres
         nowLocP.destory();
         nowLocP.detachView();
     }
+
+
 
     @Override
     public void onResume() {

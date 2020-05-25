@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -20,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
@@ -27,8 +29,11 @@ import com.example.carpoolgl.Static.STATIC_USERINFO;
 import com.example.carpoolgl.base.activity.baseActivity;
 import com.example.carpoolgl.bean.DriverCarInfo;
 import com.example.carpoolgl.bean.PayOrder;
+import com.example.carpoolgl.bean.RecordInfo;
 import com.example.carpoolgl.bean.RelOrder;
 import com.example.carpoolgl.bean.payRequestInfo;
+import com.example.carpoolgl.bean.simDriverCar;
+import com.example.carpoolgl.dataBase.orderRecord.RecordHelper;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderPresenter;
 import com.example.carpoolgl.publishedOrder.passenger.passenOrderView;
 import com.example.carpoolgl.route.RouteActivity;
@@ -66,9 +71,19 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
     private TextView driver_phone_tv;//司机电话
     private ImageView phone_call_iv;//电话img
 
-    private RelOrder order;
+
     private LatLonPoint mStartPoint = new LatLonPoint(39.942295,116.335891);//起点，39.942295,116.335891
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576,116.481288);//终点，39.995576,116.481288
+    private RelOrder order;/*
+                    ReOrSeq
+                    RePaSeq
+                    StartLoc
+                    EndLoc
+                    StartLonLat
+                    EndLonLat
+                    StartTime
+                    PassNum
+                    RelPassSeq */
 
     private ProgressBar pay_dialog_pb ;
     private TextView  pay_dialog_money_tv ;
@@ -302,6 +317,12 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             pa_cost_tv.setText("已经支付");
             pa_cost_tv.setTextColor(Color.parseColor("#FA33D636"));
             dialog.dismiss();
+            //保存订单数据至本地
+            insertRecord();
+            //TODO 将本地行程订单con设置为0 表示该订单已经完成
+
+
+
         }else if(result.equals(-1)){    //支付失败 密码错误、金额不足
             ToastUtil.show(this,payResult);
             pay_dialog_ly.setVisibility(View.VISIBLE);      //显示linearLayout
@@ -417,17 +438,14 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
                          * */
                         pay_dialog_ly.setVisibility(View.GONE); //隐藏密码界面
                         pay_dialog_pb.setVisibility(View.VISIBLE);//显示pb
+                        // 网络问题导致的超时问题，界面变换
                         TimeCutDown();
                         presenter.payOrder(Pa_OrderInfoActivity.this,payOrder);
-//                    ToastUtil.show(Pa_OrderInfoActivity.this,"进行支付");
-                        // 网络问题导致的超时问题，界面变换
-
 
                     }
                 }
             }
         });
-
 
         /*
         * 取消
@@ -460,6 +478,9 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
 
     }
 
+    /*
+    * 判断倒计时
+    * */
     public Boolean JudgeCutDown(String timeStr){
         long cutDown = 300;  //5分钟
         try{
@@ -477,5 +498,69 @@ public class Pa_OrderInfoActivity extends baseActivity<passenOrderView, passenOr
             return true;
         }
     }
+
+    public RecordInfo initRecordInfo(){
+        RecordInfo recordInfo = new RecordInfo();
+        recordInfo.setOrderSeq(order.getReOrSeq());
+        recordInfo.setStartLoc(order.getStartLoc());
+        recordInfo.setEndLoc(order.getEndLoc());
+        recordInfo.setTime(order.getStartTime());
+        recordInfo.setMoney(driverCarInfo.getSingleMoney()+driverCarInfo.getAppreMoney());
+        recordInfo.setStartLatLon(order.getStartLonLat());
+        recordInfo.setEndLatLon(order.getEndLonLat());
+        recordInfo.setRouteJson(order.getListSteps());
+        simDriverCar sdc = new simDriverCar();
+        sdc.setDrPhone(driverCarInfo.getDriverPhone());
+        sdc.setCarType(driverCarInfo.getCarColor()+" "+driverCarInfo.getCarBrand());
+        sdc.setCarNum(driverCarInfo.getCarNum());
+        sdc.setDrName(driverCarInfo.getDriverName());
+        recordInfo.setSpecialJson(JSONObject.toJSONString(sdc));
+        recordInfo.setIdentity(0);    //乘客的信息表
+
+        return recordInfo;
+    }
+
+
+    /*
+    * 将支付完成的订单保存到本地的数据库中
+    * */
+    public void insertRecord(){
+        //创建record数据库
+        RecordHelper helper = new RecordHelper(Pa_OrderInfoActivity.this,"record.db",null,1);
+
+//        String str = "{\"endLoc\":\"桂林电子科技大学金鸡岭校区\",\"identity\":0,\"money\":20,\"orderSeq\":\"ORisuwhzi193yx\",\"routeJson\":\"{yasdoiufhwlkjefhlisaudhoaushdofih}\",\"specialJson\":\"{s9a8dfqheflkjafaps98f9823r}\",\"startLoc\":\"桂林电子科技大学花江校区\",\"time\":\"2020-05-23 15:56:35\"}";
+
+        RecordInfo info = initRecordInfo();
+        Log.i("RecordInfo",info.toString());
+        SQLiteDatabase db = null;
+
+        try{
+            db = helper.getWritableDatabase();
+            db.beginTransaction();
+
+            String sql = "insert into record_info(seq,startLoc,endLoc,time,money,startLatLon,endLatLon,routeJson,special,identity)"
+                    +" values (?,?,?,?,?,?,?,?,?,?)";
+
+            db.execSQL(sql,new Object[]{info.getOrderSeq(),
+                    info.getStartLoc(),
+                    info.getEndLoc(),
+                    info.getTime(),
+                    info.getMoney(),
+                    info.getStartLatLon(),
+                    info.getEndLatLon(),
+                    info.getRouteJson(),
+                    info.getSpecialJson(),
+                    info.getIdentity()});
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
+        }
+
+    }
+
+
 
 }

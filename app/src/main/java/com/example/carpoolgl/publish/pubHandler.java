@@ -124,6 +124,7 @@ public class pubHandler extends Handler {
         }
 //        SharedPreferences.Editor shaEdit = context.getSharedPreferences("pa_orderinfo",Context.MODE_PRIVATE).edit();
         shaEdit.putInt("orderConCode",1);   //发布订单状态，1表示新发布
+        shaEdit.putInt("condition",0);   //发布订单状态，0表示新发布
         shaEdit.putString("orderJson",orderJson);   //发布订单状态，1表示新发布
         shaEdit.apply();
     }

@@ -17,8 +17,11 @@ public class mainPresenter extends basePresenter<mainView> {
     public void findLocUInfo(Context context){
         mainView view = getView();
         this.model.findUInfo(context,view);
+        this.model.findOrder(context,view);
 //        this.model.findOrder(context,view);
     }
+
+
 
 
 }

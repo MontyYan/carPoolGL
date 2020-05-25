@@ -1,4 +1,9 @@
 package com.example.carpoolgl.join.passenger;
 
-public class passenJoinModel {
+import com.example.carpoolgl.base.activity.baseModel;
+
+public class passenJoinModel extends baseModel {
+
+
+
 }

@@ -41,6 +41,7 @@ import com.example.carpoolgl.findOrders.passenger.fordersPresenter;
 import com.example.carpoolgl.findOrders.passenger.fordersView;
 import com.example.carpoolgl.recyclerView.ordersRecycAdapter;
 import com.example.carpoolgl.route.RouteActivity;
+import com.example.carpoolgl.util.CostUtil;
 import com.example.carpoolgl.util.RouteUtil;
 import com.example.carpoolgl.util.ToastUtil;
 import com.github.clans.fab.FloatingActionMenu;
@@ -357,7 +358,9 @@ public class Pa_OrderDetailActivity extends baseActivity<fordersView, fordersPre
                     if(drivePath == null) {
                         return;
                     }
-                    int taxiCost = (int)mDriveRouteResult.getTaxiCost();
+//                    int taxiCost = (int)mDriveRouteResult.getTaxiCost();
+                    int taxiCost = CostUtil.computedValue(drivePath.getDistance());//重新定价 距离/1000*2.1
+
                     Log.i("DetailActivity","taxiCost "+taxiCost);
                     money.setText(taxiCost+"");
                     order.setMoney(taxiCost);
