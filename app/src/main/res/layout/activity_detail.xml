@@ -4,42 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".Pa_OrderDetailActivity">
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/linearLayout4"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="120dp"-->
-<!--        android:background="@color/white"-->
-<!--        android:elevation="1dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="30dp"-->
-<!--                android:layout_height="30dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                app:srcCompat="@drawable/round_arrow_back_black_36" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="42dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginLeft="10dp"-->
-<!--                android:gravity="center|left"-->
-<!--                android:text="确认出行信息"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp" />-->
-<!--        </LinearLayout>-->
-<!--    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -240,7 +206,7 @@
                 app:fab_label="发布自己的行程" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_upload"
+                android:id="@+id/fab_route"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_colorNormal="@color/num_pitch"
@@ -248,7 +214,7 @@
                 app:fab_size="mini"
                 app:fab_label="查看线路" />
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/find"
+                android:id="@+id/fab_find"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_colorNormal="@color/num_pitch"
@@ -261,21 +227,41 @@
         </com.github.clans.fab.FloatingActionMenu>
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/linear_circular"
         android:elevation="1dp"
         android:orientation="vertical"
         android:layout_marginTop="100dp">
+        <LinearLayout
+            android:layout_marginTop="100dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/finding_order_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="40dp"
+                android:text="查询中..."/>
+            <ProgressBar
+                android:id="@+id/finding_order_pb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detailRecycView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_marginTop="28dp">
         </androidx.recyclerview.widget.RecyclerView>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/fog"

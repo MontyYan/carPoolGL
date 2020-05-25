@@ -11,7 +11,7 @@
         android:layout_height="60dp">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/register_back_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center"
@@ -30,25 +30,25 @@
         android:text="请填写注册信息"
         android:textSize="24sp"/>
 
+<!--    <com.rengwuxian.materialedittext.MaterialEditText-->
+<!--        android:id="@+id/register_phone_et"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginRight="30dp"-->
+<!--        android:hint="输入手机号"-->
+<!--        android:textSize="18sp"-->
+<!--        app:met_floatingLabel="highlight"-->
+<!--        app:met_iconLeft="@drawable/call_black_48dp"-->
+<!--        app:met_iconPadding="2dp"-->
+<!--        app:met_clearButton="true"-->
+<!--        android:lines="1"-->
+<!--        app:met_baseColor="@color/black"-->
+<!--        app:met_primaryColor="@color/black"-->
+<!--        app:met_errorColor="@color/red"/>-->
+
     <com.rengwuxian.materialedittext.MaterialEditText
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="30dp"
-        android:hint="输入手机号"
-        android:textSize="18sp"
-        app:met_floatingLabel="highlight"
-        app:met_iconLeft="@drawable/call_black_48dp"
-        app:met_iconPadding="2dp"
-        app:met_clearButton="true"
-        android:lines="1"
-        app:met_baseColor="@color/black"
-        app:met_primaryColor="@color/black"
-        app:met_errorColor="@color/red"/>
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-
+        android:id="@+id/register_password_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -66,6 +66,7 @@
         app:met_errorColor="@color/red"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_ensure_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -81,45 +82,23 @@
         app:met_baseColor="@color/black"
         app:met_primaryColor="@color/black"
         app:met_errorColor="@color/red"/>
-    <TextView
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_name_et"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="性别"
-        android:textSize="18sp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
-        <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/pas_num_target_tv"
-            android:layout_weight="1"
-            android:text="男"
-            android:textSize="@dimen/font_30"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
-        <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/pas_num_tv"
-            android:layout_weight="1"
-            android:text="女"
-            android:textSize="@dimen/font_30"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="30dp"
+        android:hint="姓名"
+        android:inputType="textPassword"
+        android:textSize="18sp"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/baseline_account_circle_black_48"
+        app:met_iconPadding="2dp"
+        app:met_clearButton="true"
+        android:lines="1"
+        app:met_baseColor="@color/black"
+        app:met_primaryColor="@color/black"
+        app:met_errorColor="@color/red"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -132,7 +111,7 @@
         android:layout_height="60dp"
         android:orientation="horizontal">
         <TextView
-
+            android:id="@+id/register_student_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/pas_num_target_tv"
@@ -144,21 +123,9 @@
             android:textColor="@color/black"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp" />
-        <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/pas_num_tv"
-            android:layout_weight="1"
-            android:text="教师"
-            android:textSize="@dimen/font_30"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
         <TextView
-
+            android:id="@+id/register_driver_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/pas_num_tv"
@@ -171,9 +138,68 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp" />
     </LinearLayout>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="25dp"-->
+<!--        android:layout_marginLeft="20dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:text="性别"-->
+<!--        android:textSize="18sp"/>-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:orientation="horizontal">-->
+<!--        <TextView-->
+<!--            android:id="@+id/register_man_tv"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/pas_num_target_tv"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="男"-->
+<!--            android:textSize="@dimen/font_30"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_marginLeft="25dp"-->
+<!--            android:layout_marginRight="25dp" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/register_woman_tv"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/pas_num_tv"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="女"-->
+<!--            android:textSize="@dimen/font_30"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_marginLeft="25dp"-->
+<!--            android:layout_marginRight="25dp" />-->
+<!--    </LinearLayout>-->
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/register_stuId_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="30dp"
+        android:hint="学号"
+
+        android:inputType="textPassword"
+        android:textSize="18sp"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/baseline_account_circle_black_48"
+        app:met_iconPadding="2dp"
+        app:met_clearButton="true"
+        android:lines="1"
+        app:met_baseColor="@color/black"
+        app:met_primaryColor="@color/black"
+        app:met_errorColor="@color/red"/>
 
     <Button
-
+        android:id="@+id/register_ensure_bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -181,5 +207,13 @@
         android:layout_marginRight="30dp"
         android:background="@drawable/button_normal"
         android:text="确定"/>
+
+    <ProgressBar
+        android:id="@+id/register_pb"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
 
 </LinearLayout>
